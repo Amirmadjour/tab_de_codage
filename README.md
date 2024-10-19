@@ -33,16 +33,16 @@ npm i
 
 ## Development
 
-You need two terminals
+- Create two terminals
 
-First terminal
+- First terminal: run Next js server
 
 ```
 cd frontend
 npm run dev
 ```
 
-Second terminal
+Second terminal: run Django server
 
 ```
 cd backend
