@@ -42,7 +42,7 @@ cd frontend
 npm run dev
 ```
 
-Second terminal: run Django server
+- Second terminal: run Django server
 
 ```
 cd backend
