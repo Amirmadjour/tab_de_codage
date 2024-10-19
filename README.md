@@ -5,6 +5,7 @@
 ```
 git clone git@github.com:Amirmadjour/tab_de_codage.git
 ```
+- Create a Python virtual environment to install your packages without affecting the system-wide installation.
 ```
 cd tab_de_codage
 python3 -m venv venv # For Linux (use python -m venv venv for windows)
