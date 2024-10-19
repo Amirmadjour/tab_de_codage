@@ -13,6 +13,11 @@ git clone git@github.com:Amirmadjour/tab_de_codage.git
 ```
 cd tab_de_codage
 python3 -m venv venv # For Linux (use python -m venv venv for windows)
+```
+
+- Activate the virtual enviroment for installation
+
+```
 source venv/bin/activate  # For Linux/macOS(use venv\Scripts\activate for windows)
 ```
 
@@ -21,6 +26,11 @@ source venv/bin/activate  # For Linux/macOS(use venv\Scripts\activate for window
 ```
 cd backend
 pip install -r requirements.txt # install the required packages
+```
+
+- Deactivate the virtual enviroment when done installation
+
+```
 deactivate # deactivate the virtual enviroment
 ```
 
