@@ -2,60 +2,53 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-# Titre de l'application
-st.title("Analyse des Réponses du Formulaire")
+st.title("Analyse des Réponses du Formulaire et tableau de codage")
 
-# Charger le fichier CSV directement
 data_file = 'formulaire.csv'
-
 try:
-    # Lire le fichier CSV
     data = pd.read_csv(data_file)
-    st.write("Aperçu des données :")
-    st.dataframe(data)  # Afficher les premières lignes des données
+    st.write("Tableau de données :")
+    st.dataframe(data)  #  tableau de données
 
-    # Ajouter une colonne ID
+
     data['ID'] = range(1, len(data) + 1)
-    st.success("Colonne 'ID' ajoutée avec succès.")
+    st.success("On a ajouté la colonne ID, voici un exemple : ")
+    st.dataframe(data.head(3))
 
-    # Enregistrer le nouveau fichier avec la colonne ID
     new_file_name = 'new_reponses.csv'
     data.to_csv(new_file_name, index=False)
     st.write(f"Fichier sauvegardé sous : {new_file_name}")
 
-    # Affichage des informations sur les données
     st.write("Informations sur les données :")
     st.text(data.info())
 
-    # Fonction pour afficher les valeurs uniques
+
     def display_unique_values(column_name, start_index):
         unique_values = data[column_name].unique()
         return {f"V{start_index + i}": value for i, value in enumerate(unique_values)}
 
-    # Afficher les valeurs uniques pour chaque colonne d'intérêt
     unique_values_info = {}
     columns_of_interest = ['Q1', 'Q2', 'Q4', 'Q6', 'Q8', 'Q9', 'Q10']
     for i, column in enumerate(columns_of_interest):
         unique_values_info[column] = display_unique_values(column, start_index=(i * 10) + 1)
 
     st.write("Noms des colonnes et valeurs uniques :")
-    st.json(unique_values_info)  # Afficher les valeurs uniques au format JSON
+    st.json(unique_values_info)
 
-    # Préparation d'un nouveau DataFrame
     new_data = pd.DataFrame()
     new_data['ID'] = data['ID']
 
-    # Q1 : Sexe
+    # Q1 :
     dummies_q1 = pd.get_dummies(data['Q1'], prefix='', prefix_sep='')
     dummies_q1.columns = ['V1', 'V2']
     new_data = pd.concat([new_data, dummies_q1], axis=1)
 
-    # Q2 : Spécialité
+    # Q2 :
     dummies_q2 = pd.get_dummies(data['Q2'], prefix='', prefix_sep='')
     dummies_q2.columns = ['V3', 'V4', 'V5']
     new_data = pd.concat([new_data, dummies_q2], axis=1)
 
-    # Q3 : Créer des colonnes dummy
+    # Q3 :
     def create_dummy_columns(value):
         return [1 if i < value else 0 for i in range(5)]
 
@@ -68,7 +61,7 @@ try:
     dummies_q4.columns = ['V11', 'V12', 'V13', 'V14', 'V15']
     new_data = pd.concat([new_data, dummies_q4], axis=1)
 
-    # Q5 : Créer des colonnes dummy
+    # Q5 :
     dummy_columns_q5 = data['Q5'].apply(create_dummy_columns).tolist()
     dummy_df_q5 = pd.DataFrame(dummy_columns_q5, columns=['V16', 'V17', 'V18', 'V19', 'V20'])
     new_data = pd.concat([new_data, dummy_df_q5], axis=1)
@@ -98,15 +91,12 @@ try:
     dummies_q10.columns = ['V40', 'V41', 'V42']
     new_data = pd.concat([new_data, dummies_q10], axis=1)
 
-    # Transformer tous les booléens en 1 et 0
     new_data = new_data.astype(int)
 
-    # Sauvegarder le nouveau DataFrame dans un nouveau fichier CSV
     new_data_file = 'CODING_TABLE.csv'
     new_data.to_csv(new_data_file, index=False)
     st.success(f"Nouveau fichier créé et sauvegardé sous : {new_data_file}")
 
-    # Afficher le nouveau DataFrame
     st.write("Aperçu du nouveau DataFrame :")
     st.dataframe(new_data)
 

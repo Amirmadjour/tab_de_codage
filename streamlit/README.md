@@ -9,5 +9,8 @@
   - `numpy`
   - `streamlit`
 
-pip install pandas numpy streamlit
-streamlit run main.py
+`pip install pandas numpy streamlit`
+
+`streamlit run main.py`
+
+enjoy hh
