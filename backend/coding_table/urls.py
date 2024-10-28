@@ -1,7 +1,7 @@
-# backend/coding_table/urls.py
 from django.urls import path
-from . import views
+from .views import get_csv_data
+from .views import get_data
 
 urlpatterns = [
-    path('process_csv/', views.process_and_generate_table, name='process_csv'),
+    path('api/csv-data/', get_csv_data, name='get_csv_data'),
 ]
