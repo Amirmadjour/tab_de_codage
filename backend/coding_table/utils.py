@@ -25,8 +25,12 @@ def create_coding_table_disjonctif_complet(df):
     tableau_de_codage_disjonctif_complet = pd.DataFrame()
 
     for column in df.columns:
-        unique_values = df[column].unique()
-
+        unique_values = sorted(df[column].unique())
+        # si la variable est ordinale
+        if pd.api.types.is_integer_dtype(df[column]):
+            for i, value in enumerate(unique_values, start=1):
+                tableau_de_codage_disjonctif_complet[f'{column}_{i}'] = df[column].apply(lambda x: 1 if x == value else 0)
+        # norminale
         if len(unique_values) == 2:
             tableau_de_codage_disjonctif_complet[f'{column}_1'] = df[column].map({unique_values[0]: 1, unique_values[1]: 0})
             tableau_de_codage_disjonctif_complet[f'{column}_2'] = df[column].map({unique_values[0]: 0, unique_values[1]: 1})
@@ -34,7 +38,6 @@ def create_coding_table_disjonctif_complet(df):
         elif len(unique_values) > 2:
             for i, value in enumerate(unique_values, start=1):
                 tableau_de_codage_disjonctif_complet[f'{column}_{i}'] = df[column].map({v: 1 if v == value else 0 for v in unique_values})
-
     return tableau_de_codage_disjonctif_complet
 
 def tab_de_distance(tab_codage):
