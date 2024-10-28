@@ -4,7 +4,7 @@ import numpy as np
 
 st.title("Analyse des Réponses du Formulaire et tableau de codage")
 
-data_file = 'formulaire.csv'
+data_file = '../backend/backend/formulaire.csv'
 try:
     data = pd.read_csv(data_file)
     st.write("Tableau de données :")
