@@ -1,5 +1,5 @@
 import pandas as pd
-
+import numpy as np
 
 def create_coding_table(df, ordinal_cols=None):
     tableau_de_codage = pd.DataFrame()
@@ -36,3 +36,27 @@ def create_coding_table_disjonctif_complet(df):
                 tableau_de_codage_disjonctif_complet[f'{column}_{i}'] = df[column].map({v: 1 if v == value else 0 for v in unique_values})
 
     return tableau_de_codage_disjonctif_complet
+
+def tab_de_distance(tab_codage):
+
+  # Mesure de ressemblance
+  rows, columns = tab_codage.shape
+  tab_de_distance = pd.DataFrame(np.zeros((columns, columns)), columns=tab_codage.columns)
+
+  def calcRessemblance(a, b):
+    resultat = 0
+    for i in range(0, len(a)):
+      if(a[i] == b[i]):
+        resultat += 1
+    return resultat/len(a)
+
+
+  for i in range(0, len(tab_codage.columns)):
+    for j in range(0, len(tab_codage.columns)):
+      tab_de_distance.iloc[i, j] =(calcRessemblance(tab_codage.iloc[:, i], tab_codage.iloc[:, j]))
+
+  return tab_de_distance
+
+def tab_burt(tab_de_codage_disjonctif_complet):
+  Burt = tab_de_codage_disjonctif_complet.T.dot(tab_de_codage_disjonctif_complet)
+  return Burt

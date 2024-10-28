@@ -3,8 +3,9 @@ from rest_framework.decorators import api_view
 import pandas as pd
 import os
 from rest_framework import status
-from .utils import create_coding_table
+from .utils import create_coding_table, tab_de_distance
 from .utils import create_coding_table_disjonctif_complet
+from .utils import tab_burt
 
 # test
 @api_view(['GET'])
@@ -51,5 +52,36 @@ def create_coding_table_disjonctif_complet_view(request):
 
     except FileNotFoundError:
         return Response({"error": "File not found"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+def create_tableau_de_distance_view(request):
+    csv_file_path = os.path.join(os.path.dirname(__file__), 'dataset_forms.csv')
+
+    try:
+        df = pd.read_csv(csv_file_path)
+        tableau_de_codage = create_coding_table_disjonctif_complet(df)
+        tab_de_distance_df = tab_de_distance(tableau_de_codage)
+        return Response(tab_de_distance_df.to_json(orient='records'), status=status.HTTP_200_OK)
+
+    except FileNotFoundError:
+        return Response({"error": "file not found"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+def create_tableau_de_burt_view(request):
+    csv_file_path = os.path.join(os.path.dirname(__file__), 'dataset_forms.csv')
+
+    try:
+        df = pd.read_csv(csv_file_path)
+        tab_de_codage_disjonctif_complet = create_coding_table(df, ordinal_cols='Q3')
+        tab_burt_df = tab_burt(tab_de_codage_disjonctif_complet)
+        return Response(tab_burt_df.to_json(orient='records'), status=status.HTTP_200_OK)
+
+    except FileNotFoundError:
+        return Response({"error": "file not found"}, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
