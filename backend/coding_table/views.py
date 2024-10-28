@@ -1,19 +1,18 @@
-# backend/coding_table/views.py
-from django.http import JsonResponse
-from .utils.csv_processing import process_csv, generate_coding_table
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+import pandas as pd
+import os
 
-def process_and_generate_table(request):
-    if request.method == 'POST':
-        # Vérifier si un fichier a été envoyé avec la requête
-        csv_file = request.FILES.get('csv_file')
-        if csv_file:
-            # Traiter le fichier CSV
-            data = process_csv(csv_file)
-            coding_table = generate_coding_table(data)
-            
-            # Envoyer la réponse JSON avec un message de succès
-            return JsonResponse({'message': 'Tableau de codage généré avec succès.'})
-        else:
-            return JsonResponse({'error': 'Aucun fichier CSV envoyé.'}, status=400)
-    else:
-        return JsonResponse({'error': 'Méthode non autorisée.'}, status=405)
+@api_view(['GET'])
+def get_data(request):
+    data = {"message": "salam from coding table app!"}
+    return Response(data)
+@api_view(['GET'])
+def get_csv_data(request):
+    try:
+        csv_path = os.path.join(os.path.dirname(__file__), 'dataset_tp_and.csv')
+        df = pd.read_csv(csv_path, encoding='utf-8')
+        data = df.to_dict(orient='records')
+        return Response(data)
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
