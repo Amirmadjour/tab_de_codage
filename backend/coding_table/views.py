@@ -10,7 +10,7 @@ def get_data(request):
 @api_view(['GET'])
 def get_csv_data(request):
     try:
-        csv_path = os.path.join(os.path.dirname(__file__), 'dataset_tp_and.csv')
+        csv_path = os.path.join(os.path.dirname(__file__), 'dataset_forms.csv')
         df = pd.read_csv(csv_path, encoding='utf-8')
         data = df.to_dict(orient='records')
         return Response(data)
