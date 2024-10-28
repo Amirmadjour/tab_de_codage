@@ -17,7 +17,7 @@ def get_csv_data(request):
     try:
         csv_path = os.path.join(os.path.dirname(__file__), 'dataset_forms.csv')
         df = pd.read_csv(csv_path, encoding='utf-8')
-        data = df.to_dict(orient='records')
+        data = df.to_json(orient='values')
         return Response(data)
     except Exception as e:
         return Response({"error": str(e)}, status=500)
@@ -32,7 +32,7 @@ def create_coding_table_view(request):
     try:
         df = pd.read_csv(csv_file_path)
         coded_table = create_coding_table(df, ordinal_cols=ordinal_cols)
-        return Response(coded_table.to_json(orient='records'), status=status.HTTP_200_OK)
+        return Response(coded_table.to_json(orient="split"), status=status.HTTP_200_OK)
 
     except FileNotFoundError:
         return Response({"error": "file not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -47,7 +47,7 @@ def create_coding_table_disjonctif_complet_view(request):
     try:
         df = pd.read_csv(csv_file_path)
         coded_table = create_coding_table_disjonctif_complet(df)
-        return Response(coded_table.to_json(orient='records'), status=status.HTTP_200_OK)
+        return Response(coded_table.to_json(orient="split"), status=status.HTTP_200_OK)
 
     except FileNotFoundError:
         return Response({"error": "File not found"}, status=status.HTTP_404_NOT_FOUND)
