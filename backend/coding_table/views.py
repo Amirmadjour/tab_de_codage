@@ -6,7 +6,6 @@ from rest_framework import status
 from .utils import create_coding_table, tab_de_distance
 from .utils import create_coding_table_disjonctif_complet
 from .utils import tab_burt
-
 # test
 @api_view(['GET'])
 def get_data(request):
