@@ -12,10 +12,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import DropZone from "@/components/DropZone";
 
 ChartJS.register(Tooltip, Legend, ArcElement);
 
 const App = () => {
+  const [csvData, setCsvData] = useState({
+    columns: [],
+    index: [],
+    data: [],
+  });
   const [tabCodage, setTabCodage] = useState({
     columns: [],
     index: [],
@@ -42,6 +48,13 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const csvReponse = await axios.get(
+          "http://127.0.0.1:8000/coding_table/api/csv-data/"
+        );
+        const csv = JSON.parse(csvReponse.data);
+        console.log("csvdata: ", csv);
+        setCsvData(csv);
+
         const response = await axios.get(
           "http://127.0.0.1:8000/coding_table/api/create-coding-table/"
         );
@@ -98,7 +111,7 @@ const App = () => {
                 "rgba(255, 206, 86, 0.6)",
                 "rgba(75, 192, 192, 0.6)",
                 "rgba(153, 102, 255, 0.6)",
-                "rgba(153, 99, 35, 0.6)",
+                "rgba(153, 192, 35, 0.6)",
               ],
               hoverOffset: 4,
             },
@@ -124,7 +137,34 @@ const App = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-5 py-5 w-2/3">
       {error && <p style={{ color: "red" }}>{error}</p>}
+      <DropZone />
+      <h2 className="text-gray-700 text-3xl font-bold text-left w-full">
+        Representation des données
+      </h2>
       {generateGraphics(data)}
+      <h2 className="text-gray-700 text-3xl font-bold text-left w-full">
+        Tableau de Données
+      </h2>
+      <Table className="">
+        <TableHeader>
+          <TableRow>
+            {csvData.columns.map((i, index) => (
+              <TableHead key={index}>{i}</TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {csvData.data.map((i, i_index) => (
+            <TableRow key={i_index}>
+              {i.map((j, j_index) => (
+                <TableCell key={i_index.toString() + j_index.toString()}>
+                  {j}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
       <h2 className="text-gray-700 text-3xl font-bold text-left w-full">
         Tableau de codage
       </h2>

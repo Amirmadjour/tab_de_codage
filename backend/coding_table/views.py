@@ -6,6 +6,7 @@ from rest_framework import status
 from .utils import create_coding_table, tab_de_distance
 from .utils import create_coding_table_disjonctif_complet
 from .utils import tab_burt
+
 # test
 @api_view(['GET'])
 def get_data(request):
@@ -17,7 +18,7 @@ def get_csv_data(request):
     try:
         csv_path = os.path.join(os.path.dirname(__file__), 'dataset_forms.csv')
         df = pd.read_csv(csv_path, encoding='utf-8')
-        data = df.to_json(orient='values')
+        data = df.to_json(orient='split')
         return Response(data)
     except Exception as e:
         return Response({"error": str(e)}, status=500)
