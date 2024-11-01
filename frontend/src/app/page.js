@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import DropZone from "@/components/DropZone";
 
 ChartJS.register(Tooltip, Legend, ArcElement);
 
@@ -51,7 +52,7 @@ const App = () => {
           "http://127.0.0.1:8000/coding_table/api/csv-data/"
         );
         const csv = JSON.parse(csvReponse.data);
-        console.log("csvdata: ", csv)
+        console.log("csvdata: ", csv);
         setCsvData(csv);
 
         const response = await axios.get(
@@ -136,6 +137,7 @@ const App = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-5 py-5 w-2/3">
       {error && <p style={{ color: "red" }}>{error}</p>}
+      <DropZone />
       <h2 className="text-gray-700 text-3xl font-bold text-left w-full">
         Representation des données
       </h2>
