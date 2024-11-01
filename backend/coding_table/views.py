@@ -86,7 +86,7 @@ def create_tableau_de_burt_view(request):
 
     try:
         df = pd.read_csv(csv_file_path)
-        tab_de_codage_disjonctif_complet = create_coding_table(df, ordinal_cols='Q3')
+        tab_de_codage_disjonctif_complet = create_coding_table_disjonctif_complet(df)
         tab_burt_df = tab_burt(tab_de_codage_disjonctif_complet)
         return Response(tab_burt_df.to_json(orient='split'), status=status.HTTP_200_OK)
 
