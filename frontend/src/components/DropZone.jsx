@@ -16,7 +16,7 @@ export default function DropZone() {
       {csvFile[0] ? (
         <p>{csvFile[0].name}</p>
       ) : isDragActive ? (
-        <p>Drop the files here ...</p>
+        <p>Drop the files here </p>
       ) : (
         <p>Drag 'n' drop some files here, or click to select files</p>
       )}
