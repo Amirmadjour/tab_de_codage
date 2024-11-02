@@ -2,25 +2,34 @@ import React, { useEffect, useState } from "react";
 import Papa from "papaparse";
 import VAROrdinale from "./VAROrdinale";
 import ColumnOrder from "./ColumnOrder";
+import axios from "axios";
 
-const CSVUploader = () => {
-  const [data, setData] = useState([]);
-  const [variablesOrdinales, setVariablesOrdinales] = useState([]);
+const CSVUploader = ({ setFile, data, setData }) => {
+  const [csvData, setCsvData] = useState([]);
   const [columnOrder, setColumnOrder] = useState([]);
+  const [variablesOrdinales, setVariablesOrdinales] = useState([]);
 
-  const handleFileUpload = (event) => {
+  const handleFileUpload = async (event) => {
     const file = event.target.files[0];
+
     if (file) {
       Papa.parse(file, {
         skipEmptyLines: true,
         complete: (results) => {
-          setData(results.data);
-          console.log(results.data);
+          setCsvData(results.data);
         },
         error: (error) => {
           console.error("Error while parsing CSV:", error);
         },
       });
+
+      const formData = new FormData();
+      formData.append("file", file);
+      setFile(file);
+
+      const res = await axios
+        .post("http://127.0.0.1:8000/coding_table/api/csv-data/", formData)
+        .catch((err) => console.error("Error while uploading csv file: ", err));
     }
   };
 
@@ -29,12 +38,18 @@ const CSVUploader = () => {
       return array.indexOf(value) === index;
     }
 
-    setColumnOrder(
-      data
-        .slice(1)
-        .map((i) => i[data[0].indexOf(variablesOrdinales.colonnes[0])])
-        .filter(onlyUnique)
-    );
+    let variable_ordinales_valeurs_uniques = [];
+    for (let col in variablesOrdinales.colonnes) {
+      variable_ordinales_valeurs_uniques = [
+        ...variable_ordinales_valeurs_uniques,
+        csvData
+          .slice(1)
+          .map((i) => i[csvData[0].indexOf(variablesOrdinales.colonnes[col])])
+          .filter(onlyUnique),
+      ];
+    }
+
+    setColumnOrder(variable_ordinales_valeurs_uniques);
   }, [variablesOrdinales]);
 
   return (
@@ -43,12 +58,12 @@ const CSVUploader = () => {
       <table>
         <thead>
           <tr>
-            {data.length > 0 &&
-              Object.keys(data[0]).map((key) => <th key={key}>{key}</th>)}
+            {csvData.length > 0 &&
+              Object.keys(csvData[0]).map((key) => <th key={key}>{key}</th>)}
           </tr>
         </thead>
         <tbody>
-          {data.map((row, index) => (
+          {csvData.map((row, index) => (
             <tr key={index}>
               {Object.values(row).map((value, i) => (
                 <td key={i}>{value}</td>
@@ -57,13 +72,24 @@ const CSVUploader = () => {
           ))}
         </tbody>
       </table>
-      {data.length != 0 && (
+      {csvData.length != 0 && (
         <VAROrdinale
-          colonnes={data[0]}
+          colonnes={csvData[0]}
           setVariablesOrdinales={setVariablesOrdinales}
+          setData={setData}
+          data={data}
         />
       )}
-      {columnOrder.length != 0 && <ColumnOrder variables={columnOrder} />}
+      {columnOrder.length != 0 &&
+        columnOrder.map((c, index) => (
+          <ColumnOrder
+            variables={c}
+            reponses={variablesOrdinales}
+            data={data}
+            setData={setData}
+            currentRep={variablesOrdinales.colonnes[index]}
+          />
+        ))}
     </div>
   );
 };

@@ -23,7 +23,12 @@ const FormSchema = z.object({
   }),
 });
 
-export default function VAROrdinale({ colonnes, setVariablesOrdinales }) {
+export default function VAROrdinale({
+  colonnes,
+  setVariablesOrdinales,
+  setData,
+  data,
+}) {
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -31,14 +36,18 @@ export default function VAROrdinale({ colonnes, setVariablesOrdinales }) {
     },
   });
 
-  function onSubmit(data) {
-    setVariablesOrdinales(data);
-    console.log(data)
+  function onSubmit(submittedData) {
+    setVariablesOrdinales(submittedData);
+    const newData = {};
+    submittedData.colonnes.forEach((field) => {
+      newData[field] = [];
+    });
+    setData(newData);
     toast({
       title: "You submitted the following values:",
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+          <code className="text-white">{JSON.stringify(newData, null, 2)}</code>
         </pre>
       ),
     });

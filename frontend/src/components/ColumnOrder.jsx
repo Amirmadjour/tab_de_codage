@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { toast } from "@/hooks/use-toast";
 
-const ColumnOrder = ({ variables }) => {
+const ColumnOrder = ({ variables, reponses, data, setData, currentRep }) => {
   const { register, handleSubmit, setValue, reset } = useForm();
   const [order, setOrder] = useState([]);
   const [variablesAOrder, setVariablesAOrder] = useState(variables);
@@ -28,13 +28,20 @@ const ColumnOrder = ({ variables }) => {
     e.preventDefault();
   }
 
-  function onSubmit(data) {
-    console.log(data);
+  useEffect(() => {
+    setVariablesAOrder(variables);
+    setOrder([]);
+  }, [variables]);
+
+  function onSubmit(SubmittedData) {
+    const newData = { ...data };
+    newData[currentRep] = SubmittedData.order;
+    setData(newData);
     toast({
       title: "You submitted the following values:",
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+          <code className="text-white">{JSON.stringify(newData, null, 2)}</code>
         </pre>
       ),
     });
@@ -42,25 +49,27 @@ const ColumnOrder = ({ variables }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        {variablesAOrder.map((v) => (
-          <div
-            className="select-none cursor-grab"
-            draggable
-            onDragStart={(e) => handleOnDrag(e, v)}
-          >
-            {v}
-          </div>
-        ))}
+      {variablesAOrder.map((v) => (
         <div
-          className="w-full h-fit min-h-20 bg-blue-400"
-          onDrop={handleOnDrop}
-          onDragOver={handleDragOver}
+          className="select-none cursor-grab"
+          draggable
+          onDragStart={(e) => handleOnDrag(e, v)}
         >
-          {order.map((o, index) => (
-            <div key={index}>{o}</div>
-          ))}
+          {v}
         </div>
+      ))}
+      <div
+        className="w-full h-fit min-h-20 bg-blue-400"
+        onDrop={(e) => {
+          handleOnDrop(e);
+        }}
+        onDragOver={handleDragOver}
+      >
+        {order.map((o, index) => (
+          <div key={index}>{o}</div>
+        ))}
+      </div>
+      <div className="flex gap-2">
         <Button
           onClick={(e) => {
             e.preventDefault();
@@ -70,12 +79,12 @@ const ColumnOrder = ({ variables }) => {
         >
           Réinitialiser
         </Button>
-        <button type="submit">Submit Order</button>
         <input
           type="hidden"
           {...register("order")}
           value={JSON.stringify(order)}
         />
+        <Button type="submit">Submit Order</Button>
       </div>
     </form>
   );
