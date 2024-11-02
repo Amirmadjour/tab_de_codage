@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import DropZone from "@/components/DropZone";
+import CSVReader from "@/components/CSVReader";
 
 ChartJS.register(Tooltip, Legend, ArcElement);
 
@@ -137,7 +138,7 @@ const App = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-5 py-5 w-2/3">
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <DropZone />
+      <CSVReader />
       <h2 className="text-gray-700 text-3xl font-bold text-left w-full">
         Representation des données
       </h2>
