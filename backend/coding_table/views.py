@@ -7,6 +7,7 @@ from .utils import create_coding_table, tab_de_distance
 from .utils import create_coding_table_disjonctif_complet
 from .utils import tab_burt
 from .utils import create_tableau_de_contingence
+import json
 
 @api_view(['GET'])
 def get_data(request):
@@ -15,6 +16,7 @@ def get_data(request):
 
 # fichier csv uploadé
 uploaded_csv_data = {}
+
 @api_view(['POST'])
 def upload_csv_data(request):
     try:
@@ -47,13 +49,21 @@ def get_pie_data(request):
 def create_coding_table_view(request):
     try:
         if 'df' not in uploaded_csv_data:
-            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier d'abord."},
+            return Response({"error": "Aucun fichier n'a été uploadé"},
                             status=status.HTTP_400_BAD_REQUEST)
 
         df = uploaded_csv_data['df']
         ordinal_cols = request.data.get('ordinal_cols', {})
+
+        if isinstance(ordinal_cols, str):
+            try:
+                ordinal_cols = json.loads(ordinal_cols)
+            except json.JSONDecodeError:
+                return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
+                                status=status.HTTP_400_BAD_REQUEST)
+
         if not isinstance(ordinal_cols, dict):
-            return Response({"error": "Le format de 'ordinal_cols' doit être un dictionnaire JSON"},
+            return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
                             status=status.HTTP_400_BAD_REQUEST)
 
         coded_table = create_coding_table(df, ordinale_order=ordinal_cols)
@@ -67,13 +77,23 @@ def create_coding_table_view(request):
 def create_coding_table_disjonctif_complet_view(request):
     try:
         if 'df' not in uploaded_csv_data:
-            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier d'abord."},
+            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier d'abord"},
                             status=status.HTTP_400_BAD_REQUEST)
 
         df = uploaded_csv_data['df']
         ordinal_cols = request.data.get('ordinal_cols', {})
-        coded_table = create_coding_table_disjonctif_complet(df, create_coding_table(df, ordinale_order=ordinal_cols))
-        return Response(coded_table.to_json(orient='split'), status=status.HTTP_200_OK)
+        if isinstance(ordinal_cols, str):
+            try:
+                ordinal_cols = json.loads(ordinal_cols)
+            except json.JSONDecodeError:
+                return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        if not isinstance(ordinal_cols, dict):
+            return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
+                            status=status.HTTP_400_BAD_REQUEST)
+        coded_table_disjonctif = create_coding_table_disjonctif_complet(df, create_coding_table(df, ordinale_order=ordinal_cols))
+        return Response(coded_table_disjonctif.to_json(orient='split'), status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -82,11 +102,21 @@ def create_coding_table_disjonctif_complet_view(request):
 def create_tableau_de_distance_view(request):
     try:
         if 'df' not in uploaded_csv_data:
-            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier d'abord."},
+            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier d'abord"},
                             status=status.HTTP_400_BAD_REQUEST)
 
         df = uploaded_csv_data['df']
         ordinal_cols = request.data.get('ordinal_cols', {})
+        if isinstance(ordinal_cols, str):
+            try:
+                ordinal_cols = json.loads(ordinal_cols)
+            except json.JSONDecodeError:
+                return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        if not isinstance(ordinal_cols, dict):
+            return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
+                            status=status.HTTP_400_BAD_REQUEST)
         tableau_de_codage = create_coding_table_disjonctif_complet(df, create_coding_table(df, ordinale_order=ordinal_cols))
         tab_de_distance_df = tab_de_distance(tableau_de_codage)
 
@@ -99,11 +129,21 @@ def create_tableau_de_distance_view(request):
 def create_tableau_de_burt_view(request):
     try:
         if 'df' not in uploaded_csv_data:
-            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier d'abord."},
+            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier d'abord"},
                             status=status.HTTP_400_BAD_REQUEST)
 
         df = uploaded_csv_data['df']
         ordinal_cols = request.data.get('ordinal_cols', {})
+        if isinstance(ordinal_cols, str):
+            try:
+                ordinal_cols = json.loads(ordinal_cols)
+            except json.JSONDecodeError:
+                return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        if not isinstance(ordinal_cols, dict):
+            return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
+                            status=status.HTTP_400_BAD_REQUEST)
         tab_de_codage_disjonctif_complet = create_coding_table_disjonctif_complet(
             df, create_coding_table(df, ordinale_order=ordinal_cols))
         tab_burt_df = tab_burt(tab_de_codage_disjonctif_complet)
@@ -117,16 +157,23 @@ def create_tableau_de_burt_view(request):
 def create_tableau_de_contigence_view(request):
     try:
         if 'df' not in uploaded_csv_data:
-            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier d'abord."},
+            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier d'abord"},
                             status=status.HTTP_400_BAD_REQUEST)
 
         df = uploaded_csv_data['df']
+        # n_C_2 (nombre de combinaisons possible)
         nombre_tableau_contigence = int(math.factorial(df.shape[1]) / (2 * math.factorial(df.shape[1] - 2)))
-        tab_de_contigence = create_tableau_de_contingence(df)
+        tableaux_de_contingence = create_tableau_de_contingence(df)
 
-        tables_json = [table.to_json(orient='split') for table in tab_de_contigence]
+        tables_json = {
+            key: {
+                "tableau": table_data['tableau'].to_dict(orient='split'),
+                "centre_de_gravite": table_data['centre_de_gravite']
+            }
+            for key, table_data in tableaux_de_contingence.items()
+        }
         response_data = {
-            "nombre de tableau de contigence": nombre_tableau_contigence,
+            "nombre de tableaux de contigence": nombre_tableau_contigence,
             "tables": tables_json
         }
 

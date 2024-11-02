@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import LabelEncoder
+from sklearn.cluster import KMeans
 
 def create_coding_table(data, ordinale_order={}):
     tab_de_codage = pd.DataFrame()
@@ -85,11 +87,12 @@ def tab_burt(tab_de_codage_disjonctif_complet):
   return Burt
 
 def create_tableau_de_contingence(data):
-    tab_de_contingence = []
+    tableaux = {}
 
     for i, col1 in enumerate(data.columns):
         for j, col2 in enumerate(data.columns):
             if i < j:
+                # Créer le tableau de contingence
                 tableau = data.pivot_table(
                     index=col1,
                     columns=col2,
@@ -97,6 +100,24 @@ def create_tableau_de_contingence(data):
                     fill_value=0
                 )
 
-                tab_de_contingence.append(tableau)
+                le_x, le_y = LabelEncoder(), LabelEncoder()
 
-    return tab_de_contingence
+                x_encoded = le_x.fit_transform(tableau.index)
+                y_encoded = le_y.fit_transform(tableau.columns)
+
+                x_coords = np.repeat(x_encoded, len(y_encoded))
+                y_coords = np.tile(y_encoded, len(x_encoded))
+                values = tableau.values.flatten()
+
+                points = np.array([x_coords, y_coords]).T
+                weights = values / values.sum()
+
+                kmeans = KMeans(n_clusters=1, random_state=0)
+                barycenter = kmeans.fit(points, sample_weight=weights).cluster_centers_[0]
+
+                tableaux[f"{col1}_|_{col2}"] = {
+                    'tableau': tableau,
+                    'centre_de_gravite': tuple(barycenter)
+                }
+
+    return tableaux
