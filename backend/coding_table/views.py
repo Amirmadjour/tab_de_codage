@@ -82,8 +82,18 @@ def create_coding_table_disjonctif_complet_view(request):
 
         df = uploaded_csv_data['df']
         ordinal_cols = request.data.get('ordinal_cols', {})
-        coded_table = create_coding_table_disjonctif_complet(df, create_coding_table(df, ordinale_order=ordinal_cols))
-        return Response(coded_table.to_json(orient='split'), status=status.HTTP_200_OK)
+        if isinstance(ordinal_cols, str):
+            try:
+                ordinal_cols = json.loads(ordinal_cols)
+            except json.JSONDecodeError:
+                return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        if not isinstance(ordinal_cols, dict):
+            return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
+                            status=status.HTTP_400_BAD_REQUEST)
+        coded_table_disjonctif = create_coding_table_disjonctif_complet(df, create_coding_table(df, ordinale_order=ordinal_cols))
+        return Response(coded_table_disjonctif.to_json(orient='split'), status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -97,6 +107,16 @@ def create_tableau_de_distance_view(request):
 
         df = uploaded_csv_data['df']
         ordinal_cols = request.data.get('ordinal_cols', {})
+        if isinstance(ordinal_cols, str):
+            try:
+                ordinal_cols = json.loads(ordinal_cols)
+            except json.JSONDecodeError:
+                return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        if not isinstance(ordinal_cols, dict):
+            return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
+                            status=status.HTTP_400_BAD_REQUEST)
         tableau_de_codage = create_coding_table_disjonctif_complet(df, create_coding_table(df, ordinale_order=ordinal_cols))
         tab_de_distance_df = tab_de_distance(tableau_de_codage)
 
@@ -114,6 +134,16 @@ def create_tableau_de_burt_view(request):
 
         df = uploaded_csv_data['df']
         ordinal_cols = request.data.get('ordinal_cols', {})
+        if isinstance(ordinal_cols, str):
+            try:
+                ordinal_cols = json.loads(ordinal_cols)
+            except json.JSONDecodeError:
+                return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        if not isinstance(ordinal_cols, dict):
+            return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
+                            status=status.HTTP_400_BAD_REQUEST)
         tab_de_codage_disjonctif_complet = create_coding_table_disjonctif_complet(
             df, create_coding_table(df, ordinale_order=ordinal_cols))
         tab_burt_df = tab_burt(tab_de_codage_disjonctif_complet)
