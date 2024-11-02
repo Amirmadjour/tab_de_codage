@@ -1,44 +1,64 @@
 import pandas as pd
 import numpy as np
 
-def create_coding_table(df, ordinal_cols=None):
-    tableau_de_codage = pd.DataFrame()
+def create_coding_table(data, ordinale_order={}):
+    tab_de_codage = pd.DataFrame()
 
-    for column in df.columns:
-        unique_values = df[column].unique()
+    for col in data.columns:
+        unique_values = data[col].dropna().unique()
+        if col in ordinale_order:
+            for index, val in enumerate(unique_values):
+                tab_de_codage[f"{col}_{ordinale_order[col][index]}"] = 0
+        else:
+            for val in unique_values:
+                tab_de_codage[f"{col}_{val}"] = 0
 
-        if len(unique_values) == 2:
-            tableau_de_codage[f'{column}_1'] = df[column].map({unique_values[0]: 1, unique_values[1]: 0})
-            tableau_de_codage[f'{column}_2'] = df[column].map({unique_values[0]: 0, unique_values[1]: 1})
+    for i in range(data.shape[0]):
+        for col in data.columns:
+            value = data.loc[i, col]
+            if pd.notna(value):
 
-        elif len(unique_values) > 2:
-            for i, value in enumerate(unique_values, start=1):
-                tableau_de_codage[f'{column}_{i}'] = df[column].map({v: 1 if v == value else 0 for v in unique_values})
+                if col in ordinale_order:
+                    unique_values = data[col].dropna().unique()
+                    for index, val in enumerate(unique_values):
+                        tab_de_codage.loc[i, f"{col}_{ordinale_order[col][index]}"] = 1
+                        if val == value:
+                            break
+                else:
+                    tab_de_codage.loc[i, f"{col}_{value}"] = 1
 
-        if ordinal_cols and column in ordinal_cols:
-            for i in range(1, len(unique_values) + 1):
-                tableau_de_codage[f'{column}_{i}'] = df[column].apply(lambda x: 1 if x >= unique_values[i - 1] else 0)
+    tab_de_codage.reset_index(drop=True, inplace=True)
+    tab_de_codage = tab_de_codage.fillna(0)
+    tab_de_codage = tab_de_codage.astype(int)
 
-    return tableau_de_codage
+    return tab_de_codage
 
-def create_coding_table_disjonctif_complet(df):
-    tableau_de_codage_disjonctif_complet = pd.DataFrame()
 
-    for column in df.columns:
-        unique_values = sorted(df[column].unique())
-        # si la variable est ordinale
-        if pd.api.types.is_integer_dtype(df[column]):
-            for i, value in enumerate(unique_values, start=1):
-                tableau_de_codage_disjonctif_complet[f'{column}_{i}'] = df[column].apply(lambda x: 1 if x == value else 0)
-        # norminale
-        if len(unique_values) == 2:
-            tableau_de_codage_disjonctif_complet[f'{column}_1'] = df[column].map({unique_values[0]: 1, unique_values[1]: 0})
-            tableau_de_codage_disjonctif_complet[f'{column}_2'] = df[column].map({unique_values[0]: 0, unique_values[1]: 1})
 
-        elif len(unique_values) > 2:
-            for i, value in enumerate(unique_values, start=1):
-                tableau_de_codage_disjonctif_complet[f'{column}_{i}'] = df[column].map({v: 1 if v == value else 0 for v in unique_values})
-    return tableau_de_codage_disjonctif_complet
+
+def create_coding_table_disjonctif_complet(data, tab_de_codage):
+    tab_de_codage_disjonctif = pd.DataFrame()
+
+    for col in data.columns:
+        unique_values = data[col].dropna().unique()
+        for val in unique_values:
+            tab_de_codage_disjonctif[f"{col}_{val}"] = 0
+
+    for i in range(data.shape[0]):
+        for col in data.columns:
+            value = data.loc[i, col]
+            if pd.notna(value):
+                tab_de_codage_disjonctif.loc[i, f"{col}_{value}"] = 1
+
+    tab_de_codage_disjonctif.fillna(0, inplace=True)
+    tab_de_codage_disjonctif = tab_de_codage_disjonctif.astype(int)
+
+    # sorted avec tableau de codage
+    ordered_columns = tab_de_codage.columns.tolist()
+    tab_de_codage_disjonctif = tab_de_codage_disjonctif[ordered_columns]
+
+    return tab_de_codage_disjonctif
+
 
 def tab_de_distance(tab_codage):
 
@@ -63,3 +83,20 @@ def tab_de_distance(tab_codage):
 def tab_burt(tab_de_codage_disjonctif_complet):
   Burt = tab_de_codage_disjonctif_complet.T.dot(tab_de_codage_disjonctif_complet)
   return Burt
+
+def create_tableau_de_contingence(data):
+    tab_de_contingence = []
+
+    for i, col1 in enumerate(data.columns):
+        for j, col2 in enumerate(data.columns):
+            if i < j:
+                tableau = data.pivot_table(
+                    index=col1,
+                    columns=col2,
+                    aggfunc='size',
+                    fill_value=0
+                )
+
+                tab_de_contingence.append(tableau)
+
+    return tab_de_contingence
