@@ -1,8 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Pie } from "react-chartjs-2";
-import { Chart as ChartJS, Tooltip, Legend, ArcElement } from "chart.js";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -15,11 +13,11 @@ import {
 } from "@/components/ui/table";
 import DropZone from "@/components/DropZone";
 import CSVReader from "@/components/CSVReader";
-
-ChartJS.register(Tooltip, Legend, ArcElement);
+import { useData } from "@/components/DataContext";
+import { useRawData } from "@/components/RawDataContext";
 
 const App = () => {
-  const [file, setFile] = useState();
+  const { rawData, setRawData } = useRawData();
   const [fileReady, setFileReady] = useState(false);
 
   const [tabCodage, setTabCodage] = useState({
@@ -42,14 +40,13 @@ const App = () => {
     index: [],
     data: [],
   });
-  const [pieData, setPieData] = useState();
-  const [data, setData] = useState({});
+  const { data, setData } = useData();
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (file && fileReady && data) {
+        if (rawData.file && fileReady && data) {
           console.log("It started fetching");
 
           const pieResponse = await axios
@@ -102,54 +99,21 @@ const App = () => {
     fetchData();
   }, [fileReady]);
 
-  const generateGraphics = (data) => {
-    let PieDataArr = [];
-    if (data) {
-      for (const key in data) {
-        console.log("Number: ", key);
-        const PieData = {
-          labels: Object.keys(data[key]),
-          datasets: [
-            {
-              label: "Number",
-              data: Object.values(data[key]),
-              backgroundColor: [
-                "rgba(54, 162, 235, 0.6)",
-                "rgba(255, 99, 132, 0.6)",
-                "rgba(255, 206, 86, 0.6)",
-                "rgba(75, 192, 192, 0.6)",
-                "rgba(153, 102, 255, 0.6)",
-                "rgba(153, 192, 35, 0.6)",
-              ],
-              hoverOffset: 4,
-            },
-          ],
-        };
-        PieDataArr = [...PieDataArr, PieData];
-      }
-    }
-    console.log("PieDataArr: ", PieDataArr);
-    return (
-      <div className="grid grid-cols-3">
-        {data &&
-          PieDataArr &&
-          PieDataArr.map((p, index) => (
-            <div key={index} className="w-full">
-              <Pie data={p} />
-            </div>
-          ))}
-      </div>
-    );
-  };
-
   return (
-    <div className="flex w-full h-full items-center justify-center gap-2.5 p-2.5">
+    <div className="flex flex-col w-full h-full items-start justify-start gap-2.5 overflow-auto">
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <CSVReader setFile={setFile} data={data} setData={setData} />
+      <div className="flex flex-col items-start justify-start gap-0.5">
+        <h1 className="text-3xl">File Management</h1>
+        <p className="text-xs text-foreground-secondary">
+          Upload your csv file and see results
+        </p>
+      </div>
+
+      {/*<CSVReader setFile={setFile} data={data} setData={setData} />*/}
       <DropZone />
 
-      {file && (
+      {rawData.file && (
         <Button
           onClick={async () => {
             setFileReady((val) => !val);
@@ -159,16 +123,7 @@ const App = () => {
         </Button>
       )}
 
-      {pieData && (
-        <>
-          <h2 className="text-gray-700 text-3xl font-bold text-left w-full">
-            Representation des données
-          </h2>
-          {generateGraphics(pieData)}
-        </>
-      )}
-
-      {tabCodage.data.length != 0 && (
+      {/*tabCodage.data.length != 0 && (
         <>
           <h2 className="text-gray-700 text-3xl font-bold text-left w-full">
             Tableau de codage
@@ -277,7 +232,7 @@ const App = () => {
             </TableBody>
           </Table>
         </>
-      )}
+      )*/}
     </div>
   );
 };

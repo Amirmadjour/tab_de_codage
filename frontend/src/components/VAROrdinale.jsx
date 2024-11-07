@@ -16,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useData } from "@/components/DataContext";
 
 const FormSchema = z.object({
   colonnes: z.array(z.string()).refine((value) => value.some((item) => item), {
@@ -23,12 +24,8 @@ const FormSchema = z.object({
   }),
 });
 
-export default function VAROrdinale({
-  colonnes,
-  setVariablesOrdinales,
-  setData,
-  data,
-}) {
+export default function VAROrdinale({ colonnes, setVariablesOrdinales }) {
+  const { data, setData } = useData();
   const form = useForm({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -55,7 +52,7 @@ export default function VAROrdinale({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
         <FormField
           control={form.control}
           name="colonnes"

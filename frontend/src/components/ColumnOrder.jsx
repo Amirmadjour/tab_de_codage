@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { toast } from "@/hooks/use-toast";
+import { useData } from "./DataContext";
 
-const ColumnOrder = ({ variables, reponses, data, setData, currentRep }) => {
+const ColumnOrder = ({ variables, reponses, currentRep }) => {
   const { register, handleSubmit, setValue, reset } = useForm();
   const [order, setOrder] = useState([]);
+  const { data, setData } = useData();
   const [variablesAOrder, setVariablesAOrder] = useState(variables);
 
   setValue("order", order);

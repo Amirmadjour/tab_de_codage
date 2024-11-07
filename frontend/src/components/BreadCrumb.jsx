@@ -12,7 +12,7 @@ import CoolFaceSVG from "@/assets/svg/CoolFaceSVG";
 
 export default function BreadCrumb() {
   return (
-    <Breadcrumb>
+    <Breadcrumb className="py-2">
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbPage>

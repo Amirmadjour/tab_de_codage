@@ -28,6 +28,7 @@ const SideBar = () => {
         <LogoSVG />
         <p>v1.0</p>
       </div>
+      <p className="text-foreground-secondary text-xs w-full px-5">Générale</p>
       <div className="flex flex-col items-center justify-center gap-2.5 w-full h-fit">
         {BarItems.map((i) => (
           <Link
