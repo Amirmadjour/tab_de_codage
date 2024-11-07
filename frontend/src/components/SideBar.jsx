@@ -23,8 +23,8 @@ const BarItems = [
 
 const SideBar = () => {
   return (
-    <div className="flex flex-col w-[296px] h-full items-center justify-start">
-      <div className="flex w-full h-fit items-center justify-between">
+    <div className="flex flex-col w-[296px] flex-shrink-0 p-2.5 gap-1 h-full items-center justify-start">
+      <div className="flex w-full h-fit items-center justify-between px-4 py-2.5">
         <LogoSVG />
         <p>v1.0</p>
       </div>
@@ -33,7 +33,7 @@ const SideBar = () => {
           <Link
             href={i.segment}
             key={i.id}
-            className="w-full h-10 flex items-center justify-start px-5 gap-5"
+            className="w-full h-10 flex items-center justify-start px-5 gap-5 rounded-[10px] hover:bg-hover"
           >
             {i.logo}
             <p>{i.title}</p>

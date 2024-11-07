@@ -3,6 +3,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { Inter } from "next/font/google";
 import SideBar from "@/components/SideBar";
+import BreadCrumb from "@/components/BreadCrumb";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", weight: "500" });
 
@@ -26,10 +27,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.className} antialiased flex items-center justify-center gap-2.5 p-2.5 bg-background w-screen h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.className} antialiased  bg-background w-screen h-screen`}
       >
-        <SideBar />
-        <div className="w-full h-full">{children}</div>
+        <div className="w-full h-full  flex items-center justify-center gap-2.5 p-2.5">
+          <SideBar />
+          <div className="flex flex-col items-start justify-start p-2.5 gap-1 h-full grow bg-background-secondary rounded-[20px] shadow-[0_0_4px_0_rgba(0,0,0,0.25)]">
+            <BreadCrumb />
+            {children}
+          </div>
+        </div>
         <Toaster />
       </body>
     </html>

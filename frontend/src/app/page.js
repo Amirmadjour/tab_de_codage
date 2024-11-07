@@ -102,8 +102,6 @@ const App = () => {
     fetchData();
   }, [fileReady]);
 
-  console.log("Pie data:", data);
-
   const generateGraphics = (data) => {
     let PieDataArr = [];
     if (data) {
@@ -149,6 +147,7 @@ const App = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <CSVReader setFile={setFile} data={data} setData={setData} />
+      <DropZone />
 
       {file && (
         <Button
