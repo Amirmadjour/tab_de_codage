@@ -1,6 +1,10 @@
 import localFont from "next/font/local";
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
+import { Inter } from "next/font/google";
+import SideBar from "@/components/SideBar";
+
+const inter = Inter({ subsets: ["latin"], display: "swap", weight: "500" });
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,10 +26,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex items-center justify-center`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.className} antialiased flex items-center justify-center gap-2.5 p-2.5 bg-background w-screen h-screen`}
       >
-        {children}
-         <Toaster />
+        <SideBar />
+        <div className="w-full h-full">{children}</div>
+        <Toaster />
       </body>
     </html>
   );

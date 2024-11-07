@@ -51,6 +51,12 @@ const App = () => {
       try {
         if (file && fileReady && data) {
           console.log("It started fetching");
+
+          const pieResponse = await axios
+            .post("http://127.0.0.1:8000/coding_table/api/pie-data/", data)
+            .catch((err) => console.error(err));
+          setPieData(pieResponse.data);
+
           const response = await axios
             .post(
               "http://127.0.0.1:8000/coding_table/api/create-coding-table/",
@@ -87,11 +93,6 @@ const App = () => {
             .catch((err) => console.error(err));
           const BurtTab = JSON.parse(tabBurtResponse.data);
           setTabBurt(BurtTab);
-
-          const pieResponse = await axios
-            .post("http://127.0.0.1:8000/coding_table/api/pie-data/", data)
-            .catch((err) => console.error(err));
-          setPieData(pieResponse.data);
         }
       } catch (err) {
         setError(err.message);
@@ -134,8 +135,8 @@ const App = () => {
       <div className="grid grid-cols-3">
         {data &&
           PieDataArr &&
-          PieDataArr.map((p) => (
-            <div className="w-full">
+          PieDataArr.map((p, index) => (
+            <div key={index} className="w-full">
               <Pie data={p} />
             </div>
           ))}
@@ -144,7 +145,7 @@ const App = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center gap-5 py-5 w-2/3">
+    <div className="flex w-full h-full items-center justify-center gap-2.5 p-2.5">
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <CSVReader setFile={setFile} data={data} setData={setData} />

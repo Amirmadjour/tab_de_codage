@@ -49,9 +49,10 @@ const ColumnOrder = ({ variables, reponses, data, setData, currentRep }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      {variablesAOrder.map((v) => (
+      {variablesAOrder.map((v, index) => (
         <div
-          className="select-none cursor-grab"
+          key={index}
+          className="select-none cursor-grab hover:font-bold hover:bg-gray-300"
           draggable
           onDragStart={(e) => handleOnDrag(e, v)}
         >
