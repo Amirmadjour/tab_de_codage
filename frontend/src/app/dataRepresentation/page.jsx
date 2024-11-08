@@ -19,8 +19,6 @@ const page = () => {
     const fetchData = async () => {
       try {
         if (Object.keys(rawData.file).length > 0) {
-          console.log("It started fetching");
-
           const pieResponse = await axios
             .post("http://127.0.0.1:8000/coding_table/api/pie-data/", data)
             .then((res) => setPieData(res.data))
@@ -74,7 +72,6 @@ const page = () => {
     );
   };
 
-  console.log("pieData: ", pieData);
 
   return (
     <div className="w-full">
