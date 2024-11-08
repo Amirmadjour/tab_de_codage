@@ -49,11 +49,6 @@ const App = () => {
         if (rawData.file && fileReady && data) {
           console.log("It started fetching");
 
-          const pieResponse = await axios
-            .post("http://127.0.0.1:8000/coding_table/api/pie-data/", data)
-            .catch((err) => console.error(err));
-          setPieData(pieResponse.data);
-
           const response = await axios
             .post(
               "http://127.0.0.1:8000/coding_table/api/create-coding-table/",

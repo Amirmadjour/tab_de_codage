@@ -5,6 +5,7 @@ import { Chart as ChartJS, Tooltip, Legend, ArcElement } from "chart.js";
 import { useRawData } from "@/components/RawDataContext";
 import { useData } from "@/components/DataContext";
 import axios from "axios";
+import InfoSVG from "@/assets/svg/InfoSVG";
 
 ChartJS.register(Tooltip, Legend, ArcElement);
 
@@ -76,7 +77,13 @@ const page = () => {
   console.log("pieData: ", pieData);
 
   return (
-    <div>
+    <div className="w-full">
+      {Object.keys(rawData.file).length == 0 && (
+        <div className="bg-hover text-popover-foreground flex gap-2.5 items-center justify-start p-4 h-fit w-full rounded-[10px]">
+          <InfoSVG />
+          <p>Please upload a file to see data using pie charts</p>{" "}
+        </div>
+      )}
       {pieData && (
         <>
           <h2 className="text-3xl font-bold text-left w-full">

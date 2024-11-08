@@ -17,11 +17,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useData } from "@/components/DataContext";
+import { useState } from "react";
+import clsx from "clsx";
 
 const FormSchema = z.object({
-  colonnes: z.array(z.string()).refine((value) => value.some((item) => item), {
-    message: "You have to select at least one item.",
-  }),
+  colonnes: z.array(z.string()),
 });
 
 export default function VAROrdinale({ colonnes, setVariablesOrdinales }) {
@@ -59,10 +59,9 @@ export default function VAROrdinale({ colonnes, setVariablesOrdinales }) {
           render={() => (
             <FormItem>
               <div className="mb-4">
-                <FormLabel className="text-base">Variable ordinales</FormLabel>
-                <FormDescription>
-                  Veuiller choisir les variables ordinales
-                </FormDescription>
+                <FormLabel className="text-lg">
+                  Select ordinal variables
+                </FormLabel>
               </div>
               {colonnes.map((colonne) => (
                 <FormField
@@ -70,26 +69,34 @@ export default function VAROrdinale({ colonnes, setVariablesOrdinales }) {
                   control={form.control}
                   name="colonnes"
                   render={({ field }) => {
+                    const isChecked = field.value?.includes(colonne);
                     return (
                       <FormItem
                         key={colonne}
-                        className="flex flex-row items-start space-x-3 space-y-0"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          const checked = !isChecked;
+                          if (checked) {
+                            field.onChange([...field.value, colonne]);
+                          } else {
+                            field.onChange(
+                              field.value.filter((value) => value !== colonne)
+                            );
+                          }
+                        }}
+                        className={clsx(
+                          "flex flex-row items-center justify-start space-x-5 space-y-0 px-4 hover:bg-hover h-10 rounded-[10px] border border-transparent",
+                          field.value?.includes(colonne) &&
+                            "border border-primary"
+                        )}
                       >
                         <FormControl>
                           <Checkbox
+                            className="ring-0 shadow-none"
                             checked={field.value?.includes(colonne)}
-                            onCheckedChange={(checked) => {
-                              return checked
-                                ? field.onChange([...field.value, colonne])
-                                : field.onChange(
-                                    field.value?.filter(
-                                      (value) => value !== colonne
-                                    )
-                                  );
-                            }}
                           />
                         </FormControl>
-                        <FormLabel className="text-sm font-normal">
+                        <FormLabel className="text-lg font-normal">
                           {colonne}
                         </FormLabel>
                       </FormItem>

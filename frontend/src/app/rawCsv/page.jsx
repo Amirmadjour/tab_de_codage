@@ -1,29 +1,38 @@
 "use client";
 import { useRawData } from "@/components/RawDataContext";
+import InfoSVG from "@/assets/svg/InfoSVG";
 import React from "react";
 
 const page = () => {
   const { rawData } = useRawData();
   return (
-    <table>
-      <thead>
-        <tr>
-          {rawData.csvData.length > 0 &&
-            Object.keys(rawData.csvData[0]).map((key) => (
-              <th key={key}>{key}</th>
-            ))}
-        </tr>
-      </thead>
-      <tbody>
-        {rawData.csvData.map((row, index) => (
-          <tr key={index}>
-            {Object.values(row).map((value, i) => (
-              <td key={i}>{value}</td>
-            ))}
+    <div className="flex flex-col h-fit w-full">
+      {Object.keys(rawData.file).length == 0 && (
+        <div className="bg-hover text-popover-foreground flex gap-2.5 items-center justify-start p-4 h-fit w-full rounded-[10px]">
+          <InfoSVG />
+          <p>Please upload a file to see it as a raw csv</p>{" "}
+        </div>
+      )}
+      <table>
+        <thead>
+          <tr>
+            {rawData.csvData.length > 0 &&
+              Object.keys(rawData.csvData[0]).map((key) => (
+                <th key={key}>{key}</th>
+              ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {rawData.csvData.map((row, index) => (
+            <tr key={index}>
+              {Object.values(row).map((value, i) => (
+                <td key={i}>{value}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

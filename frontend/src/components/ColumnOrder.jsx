@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { toast } from "@/hooks/use-toast";
 import { useData } from "./DataContext";
+import DragHandleSVG from "@/assets/svg/DragHandleSVG";
 
 const ColumnOrder = ({ variables, reponses, currentRep }) => {
   const { register, handleSubmit, setValue, reset } = useForm();
@@ -50,30 +51,42 @@ const ColumnOrder = ({ variables, reponses, currentRep }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col items-start justify-start gap-2.5 w-full"
+    >
+      <h2 className="text-lg">Select ordinal variables</h2>
       {variablesAOrder.map((v, index) => (
         <div
           key={index}
-          className="select-none cursor-grab hover:font-bold hover:bg-gray-300"
+          className="w-full flex items-center justify-start gap-2.5 select-none cursor-grab hover:bg-hover h-10 rounded-[10px]"
           draggable
           onDragStart={(e) => handleOnDrag(e, v)}
         >
+          <DragHandleSVG />
           {v}
         </div>
       ))}
       <div
-        className="w-full h-fit min-h-20 bg-blue-400"
+        className="dashed-drag-n-drop w-full h-fit min-h-20 p-2.5 numbered-list"
         onDrop={(e) => {
           handleOnDrop(e);
         }}
         onDragOver={handleDragOver}
       >
         {order.map((o, index) => (
-          <div key={index}>{o}</div>
+          <div
+            key={index}
+            className="w-full flex items-center justify-start select-none hover:bg-hover h-10 rounded-[10px] px-2"
+          >
+            {o}
+          </div>
         ))}
       </div>
+
       <div className="flex gap-2">
         <Button
+          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           onClick={(e) => {
             e.preventDefault();
             setOrder([]);
