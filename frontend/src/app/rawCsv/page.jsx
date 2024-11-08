@@ -1,19 +1,14 @@
 "use client";
 import { useRawData } from "@/components/RawDataContext";
 import React from "react";
+import "./TableStyles.css";
 
-const page = () => {
+const Page = () => {
   const { rawData } = useRawData();
+
   return (
-    <table>
-      <thead>
-        <tr>
-          {rawData.csvData.length > 0 &&
-            Object.keys(rawData.csvData[0]).map((key) => (
-              <th key={key}>{key}</th>
-            ))}
-        </tr>
-      </thead>
+    <table className="tableau_style">
+
       <tbody>
         {rawData.csvData.map((row, index) => (
           <tr key={index}>
@@ -27,4 +22,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
