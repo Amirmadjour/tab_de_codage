@@ -2,9 +2,11 @@
 import { useRawData } from "@/components/RawDataContext";
 import InfoSVG from "@/assets/svg/InfoSVG";
 import React from "react";
+import "./TableStyles.css";
 
-const page = () => {
+const Page = () => {
   const { rawData } = useRawData();
+
   return (
     <div className="flex flex-col h-fit w-full">
       {Object.keys(rawData.file).length == 0 && (
@@ -13,14 +15,15 @@ const page = () => {
           <p>Please upload a file to see it as a raw csv</p>{" "}
         </div>
       )}
-      <table>
+      <table className="tableau_style">
         <thead>
-          <tr>
-            {rawData.csvData.length > 0 &&
-              Object.keys(rawData.csvData[0]).map((key) => (
-                <th key={key}>{key}</th>
+          {rawData.csvData.map((row, index) => (
+            <tr key={index}>
+              {Object.values(row).map((value, i) => (
+                <td key={i}>{value}</td>
               ))}
-          </tr>
+            </tr>
+          ))}
         </thead>
         <tbody>
           {rawData.csvData.map((row, index) => (
@@ -36,4 +39,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
