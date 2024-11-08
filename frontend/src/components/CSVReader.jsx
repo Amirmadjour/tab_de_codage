@@ -83,6 +83,7 @@ const CSVUploader = ({ setFile, data, setData }) => {
       {columnOrder.length != 0 &&
         columnOrder.map((c, index) => (
           <ColumnOrder
+            key={index}
             variables={c}
             reponses={variablesOrdinales}
             data={data}

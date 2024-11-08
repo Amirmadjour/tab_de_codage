@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { toast } from "@/hooks/use-toast";
+import { useData } from "./DataContext";
 
-const ColumnOrder = ({ variables, reponses, data, setData, currentRep }) => {
+const ColumnOrder = ({ variables, reponses, currentRep }) => {
   const { register, handleSubmit, setValue, reset } = useForm();
   const [order, setOrder] = useState([]);
+  const { data, setData } = useData();
   const [variablesAOrder, setVariablesAOrder] = useState(variables);
 
   setValue("order", order);
@@ -49,9 +51,10 @@ const ColumnOrder = ({ variables, reponses, data, setData, currentRep }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      {variablesAOrder.map((v) => (
+      {variablesAOrder.map((v, index) => (
         <div
-          className="select-none cursor-grab"
+          key={index}
+          className="select-none cursor-grab hover:font-bold hover:bg-gray-300"
           draggable
           onDragStart={(e) => handleOnDrag(e, v)}
         >
