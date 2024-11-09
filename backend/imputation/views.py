@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 import math
 from rest_framework import status
 import json
-from .utils import simple_linear_regression
+from .utils import simple_linear_regression, multiple_linear_regression, MT
 @api_view(['GET'])
 def get_data(request):
     data = {"message": "salam from coding table app!"}
@@ -55,3 +55,17 @@ def simple_linear_regression_view(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+@api_view(['POST'])
+def multiple_linear_regression_view(request):
+    try:
+        if 'df' not in uploaded_csv_data:
+            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier d'abord"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        df = uploaded_csv_data['df']
+        multiple_regression = multiple_linear_regression(df)
+
+        return Response(multiple_regression.to_json(orient='split'), status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
