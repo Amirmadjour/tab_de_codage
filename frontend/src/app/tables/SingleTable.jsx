@@ -14,9 +14,9 @@ const SingleTable = ({ title, content }) => {
     <div className="w-full flex flex-col items-center justify-center gap-5">
       {content.data.length != 0 && (
         <>
-          <Table className="">
+          <Table className="rounded-[10px] border">
             <TableHeader>
-              <TableRow>
+              <TableRow className="">
                 {content.columns.map((i, index) => (
                   <TableHead key={index}>{i}</TableHead>
                 ))}
