@@ -38,10 +38,14 @@ const page = () => {
     const fetchData = async () => {
       try {
         if (rawData.file && data) {
+          const formData = new FormData();
+          formData.append("ordinal_cols", JSON.stringify(data));
+
           const response = await axios
             .post(
               "http://127.0.0.1:8000/coding_table/api/create-coding-table/",
-              data
+              formData,
+              { headers: { "Content-Type": "multipart/form-data" } }
             )
             .catch((err) => console.error(err));
           const codingTab = JSON.parse(response.data);
@@ -57,7 +61,8 @@ const page = () => {
           const tabDisjonctifResponse = await axios
             .post(
               "http://127.0.0.1:8000/coding_table/api/create-coding-table-disjonctif-complet/",
-              data
+              formData,
+              { headers: { "Content-Type": "multipart/form-data" } }
             )
             .catch((err) => console.error(err));
           const disjonctifTab = JSON.parse(tabDisjonctifResponse.data);
@@ -71,7 +76,8 @@ const page = () => {
           const tabDistanceResponse = await axios
             .post(
               "http://127.0.0.1:8000/coding_table/api/create-distance-table/",
-              data
+              formData,
+              { headers: { "Content-Type": "multipart/form-data" } }
             )
             .catch((err) => console.error(err));
           const distanceTab = JSON.parse(tabDistanceResponse.data);
@@ -85,7 +91,8 @@ const page = () => {
           const tabBurtResponse = await axios
             .post(
               "http://127.0.0.1:8000/coding_table/api/create-burt-table/",
-              data
+              formData,
+              { headers: { "Content-Type": "multipart/form-data" } }
             )
             .catch((err) => console.error(err));
           const BurtTab = JSON.parse(tabBurtResponse.data);
@@ -100,7 +107,8 @@ const page = () => {
           const tabContingenceResponse = await axios
             .post(
               "http://127.0.0.1:8000/coding_table/api/create-contigence-table/",
-              data
+              formData,
+              { headers: { "Content-Type": "multipart/form-data" } }
             )
             .then((res) => {
               setTabContingence(res.data.tables);
