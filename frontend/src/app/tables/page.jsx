@@ -5,6 +5,7 @@ import InfoSVG from "@/assets/svg/InfoSVG";
 import { useData } from "@/components/DataContext";
 import axios from "axios";
 import Tables from "./Tables";
+import { v4 as uuidv4 } from "uuid";
 
 const page = () => {
   const { rawData } = useRawData();
@@ -30,6 +31,7 @@ const page = () => {
     data: [],
   });
   const [tabContingence, setTabContingence] = useState({});
+  const [tables, setTables] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -44,6 +46,11 @@ const page = () => {
             .catch((err) => console.error(err));
           const codingTab = JSON.parse(response.data);
           setTabCodage(codingTab);
+          const obj1 = {
+            id: uuidv4(),
+            title: "Tableau de codage",
+            content: codingTab,
+          };
 
           const tabDisjonctifResponse = await axios
             .post(
@@ -53,6 +60,11 @@ const page = () => {
             .catch((err) => console.error(err));
           const disjonctifTab = JSON.parse(tabDisjonctifResponse.data);
           setTabDisjonctif(disjonctifTab);
+          const obj2 = {
+            id: uuidv4(),
+            title: "Tableau de codage disjonctif",
+            content: disjonctifTab,
+          };
 
           const tabDistanceResponse = await axios
             .post(
@@ -62,6 +74,11 @@ const page = () => {
             .catch((err) => console.error(err));
           const distanceTab = JSON.parse(tabDistanceResponse.data);
           setTabDistance(distanceTab);
+          const obj3 = {
+            id: uuidv4(),
+            title: "Tableau de Distance",
+            content: distanceTab,
+          };
 
           const tabBurtResponse = await axios
             .post(
@@ -71,7 +88,13 @@ const page = () => {
             .catch((err) => console.error(err));
           const BurtTab = JSON.parse(tabBurtResponse.data);
           setTabBurt(BurtTab);
+          const obj4 = {
+            id: uuidv4(),
+            title: "Tableau de Burt",
+            content: BurtTab,
+          };
 
+          let obj5 = {};
           const tabContingenceResponse = await axios
             .post(
               "http://127.0.0.1:8000/coding_table/api/create-contigence-table/",
@@ -79,8 +102,17 @@ const page = () => {
             )
             .then((res) => {
               setTabContingence(res.data.tables);
+              obj5 = {
+                id: uuidv4(),
+                title: "Tableaux de contingences",
+                content: res.data.tables,
+              };
             })
             .catch((err) => console.error(err));
+
+          setTables([obj1, obj2, obj3, obj4, obj5]);
+
+          console.log([obj1, obj2, obj3, obj4, obj5]);
         }
       } catch (err) {
         setError(err.message);
@@ -98,13 +130,7 @@ const page = () => {
           <p>Please upload a file to see results in tables</p>{" "}
         </div>
       ) : (
-        <Tables
-          tabBurt={tabBurt}
-          tabCodage={tabCodage}
-          tabDisjonctif={tabDisjonctif}
-          tabDistance={tabDistance}
-          tabContingence={tabContingence}
-        />
+        tables[4] && <Tables tables={tables} />
       )}
     </div>
   );

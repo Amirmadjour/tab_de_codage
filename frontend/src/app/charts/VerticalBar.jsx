@@ -95,7 +95,7 @@ const VerticalBar = () => {
 
   // Ensure the canvas has a defined height
   return (
-    <div className="w-full">
+    <div className="w-full flex items-center justify-center">
       {pieData && generateGraphics(pieData)}
     </div>
   );

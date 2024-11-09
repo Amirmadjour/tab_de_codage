@@ -123,7 +123,7 @@ const HeatMap = ({ content }) => {
       .on("mouseleave", mouseleave);
   }, []);
 
-  return <div className="w-full h-full" ref={svgRef} id="something"></div>;
+  return <div className="w-full h-full flex items-center justify-center" ref={svgRef} id="something"></div>;
 };
 
 export default HeatMap;
