@@ -12,13 +12,11 @@ import FileUploadSVG from "@/assets/svg/FileUploadSVG";
 export default function DropZone() {
   const { rawData, setRawData } = useRawData();
 
-  console.log("file at start: ", Object.keys(rawData.file).length);
 
   const [columnOrder, setColumnOrder] = useState([]);
   const [variablesOrdinales, setVariablesOrdinales] = useState([]);
 
   const onDrop = useCallback(async (acceptedFiles) => {
-    console.log(acceptedFiles);
 
     const file_acc = acceptedFiles[0];
 
