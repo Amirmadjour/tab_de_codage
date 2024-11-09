@@ -10,8 +10,6 @@ import {
 } from "@/components/ui/table";
 
 const SingleTable = ({ title, content }) => {
-  console.log("Title: ", title);
-  console.log("Content: ", content);
   return (
     <div className="w-full flex flex-col items-center justify-center gap-5">
       {content.data.length != 0 && (

@@ -38,7 +38,8 @@ const ColumnOrder = ({ variables, reponses, currentRep }) => {
 
   function onSubmit(SubmittedData) {
     const newData = { ...data };
-    newData[currentRep] = SubmittedData.order;
+    newData.ordinal_cols[currentRep] = SubmittedData.order;
+    console.log(newData);
     setData(newData);
     toast({
       title: "You submitted the following values:",
