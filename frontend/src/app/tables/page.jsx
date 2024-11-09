@@ -45,6 +45,8 @@ const page = () => {
             )
             .catch((err) => console.error(err));
           const codingTab = JSON.parse(response.data);
+          console.log("data: ", data);
+          console.log(codingTab);
           setTabCodage(codingTab);
           const obj1 = {
             id: uuidv4(),
@@ -111,8 +113,6 @@ const page = () => {
             .catch((err) => console.error(err));
 
           setTables([obj1, obj2, obj3, obj4, obj5]);
-
-          console.log([obj1, obj2, obj3, obj4, obj5]);
         }
       } catch (err) {
         setError(err.message);
