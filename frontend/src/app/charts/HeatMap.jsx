@@ -1,13 +1,16 @@
 import React, { useRef, useEffect } from "react";
 import * as d3 from "d3";
+import { formDataToHeatMap } from "@/lib/utils";
 
-const DataHeatMap = ({ data }) => {
+const HeatMap = ({ content }) => {
   const svgRef = useRef(null);
   useEffect(() => {
+    const data = formDataToHeatMap(content);
+
     d3.select(svgRef.current).selectAll("*").remove();
 
     // Set dimensions and margins for the heatmap
-    const margin = { top: 80, right: 25, bottom: 30, left: 40 };
+    const margin = { top: 20, right: 25, bottom: 30, left: 40 };
     const width = 600 - margin.left - margin.right;
     const height = 450 - margin.top - margin.bottom;
 
@@ -56,15 +59,20 @@ const DataHeatMap = ({ data }) => {
       .append("div")
       .style("opacity", 0)
       .attr("class", "tooltip")
+      .style("user-select", "none")
       .style("color", "white")
       .style("font-size", "12px")
       .style("background-color", "#151515E6")
       .style("border-radius", "5px")
-      .style("padding", "5px");
+      .style("padding", "5px")
+      .style("z-index", -1);
 
     // Three function that change the tooltip when user hover / move / leave a cell
     const mouseover = (event, d) => {
-      Tooltip.style("opacity", 1);
+      Tooltip.transition()
+        .duration(500)
+        .style("opacity", 1)
+        .style("z-index", 1);
       d3.select(event.currentTarget)
         .style("stroke", "#1C274C")
         .style("opacity", 1);
@@ -77,7 +85,10 @@ const DataHeatMap = ({ data }) => {
     };
 
     const mouseleave = (event, d) => {
-      Tooltip.style("opacity", 0);
+      Tooltip.transition()
+        .duration(200)
+        .style("opacity", 0)
+        .style("z-index", 1);
       d3.select(event.currentTarget)
         .style("stroke", "none")
         .style("opacity", 0.8);
@@ -115,4 +126,4 @@ const DataHeatMap = ({ data }) => {
   return <div className="w-full h-full" ref={svgRef} id="something"></div>;
 };
 
-export default DataHeatMap;
+export default HeatMap;

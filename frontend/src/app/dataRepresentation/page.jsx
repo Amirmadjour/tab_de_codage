@@ -72,7 +72,6 @@ const page = () => {
     );
   };
 
-
   return (
     <div className="w-full">
       {Object.keys(rawData.file).length == 0 && (
