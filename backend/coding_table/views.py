@@ -53,7 +53,7 @@ def create_coding_table_view(request):
                             status=status.HTTP_400_BAD_REQUEST)
 
         df = uploaded_csv_data['df']
-        ordinal_cols = request.data.get('ordinal_cols', {})
+        ordinal_cols = request.POST.get('ordinal_cols', '{}')
 
         if isinstance(ordinal_cols, str):
             try:
@@ -81,7 +81,7 @@ def create_coding_table_disjonctif_complet_view(request):
                             status=status.HTTP_400_BAD_REQUEST)
 
         df = uploaded_csv_data['df']
-        ordinal_cols = request.data.get('ordinal_cols', {})
+        ordinal_cols = request.POST.get('ordinal_cols', {})
         if isinstance(ordinal_cols, str):
             try:
                 ordinal_cols = json.loads(ordinal_cols)
@@ -106,7 +106,7 @@ def create_tableau_de_distance_view(request):
                             status=status.HTTP_400_BAD_REQUEST)
 
         df = uploaded_csv_data['df']
-        ordinal_cols = request.data.get('ordinal_cols', {})
+        ordinal_cols = request.POST.get('ordinal_cols', {})
         if isinstance(ordinal_cols, str):
             try:
                 ordinal_cols = json.loads(ordinal_cols)
@@ -117,6 +117,7 @@ def create_tableau_de_distance_view(request):
         if not isinstance(ordinal_cols, dict):
             return Response({"error": "Le format de 'ordinal_cols' doit être en JSON"},
                             status=status.HTTP_400_BAD_REQUEST)
+        print("ordinal_cols: ", ordinal_cols)
         tableau_de_codage = create_coding_table_disjonctif_complet(df, create_coding_table(df, ordinale_order=ordinal_cols))
         tab_de_distance_df = tab_de_distance(tableau_de_codage)
 
@@ -133,7 +134,7 @@ def create_tableau_de_burt_view(request):
                             status=status.HTTP_400_BAD_REQUEST)
 
         df = uploaded_csv_data['df']
-        ordinal_cols = request.data.get('ordinal_cols', {})
+        ordinal_cols = request.POST.get('ordinal_cols', '{}')
         if isinstance(ordinal_cols, str):
             try:
                 ordinal_cols = json.loads(ordinal_cols)

@@ -5,6 +5,7 @@ from sklearn.cluster import KMeans
 
 def create_coding_table(data, ordinale_order={}):
     tab_de_codage = pd.DataFrame()
+    print("ordinal_order my man: ", ordinale_order)
 
     for col in data.columns:
         unique_values = data[col].dropna().unique()

@@ -38,7 +38,7 @@ const ColumnOrder = ({ variables, reponses, currentRep }) => {
 
   function onSubmit(SubmittedData) {
     const newData = { ...data };
-    newData.ordinal_cols[currentRep] = SubmittedData.order;
+    newData[currentRep] = SubmittedData.order;
     console.log(newData);
     setData(newData);
     toast({

@@ -39,14 +39,12 @@ export default function VAROrdinale({ colonnes, setVariablesOrdinales }) {
     submittedData.colonnes.forEach((field) => {
       newData[field] = [];
     });
-    setData({ ordinal_cols: newData });
+    setData(newData);
     toast({
       title: "You submitted the following values:",
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">
-            {JSON.stringify({ ordinal_cols: newData }, null, 2)}
-          </code>
+          <code className="text-white">{JSON.stringify(newData, null, 2)}</code>
         </pre>
       ),
     });
