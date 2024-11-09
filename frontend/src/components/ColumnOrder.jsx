@@ -21,7 +21,9 @@ const ColumnOrder = ({ variables, reponses, currentRep }) => {
 
   function handleOnDrop(e) {
     const orderType = e.dataTransfer.getData("orderType");
-    const updatedOrder = [...order, orderType];
+    const parsedOrderType = isNaN(orderType) ? orderType : Number(orderType);
+    const updatedOrder = [...order, parsedOrderType];
+    console.log("updatedOrder: ", updatedOrder);
     setOrder(updatedOrder);
     setValue("order", updatedOrder);
     setVariablesAOrder(variablesAOrder.filter((i) => i !== orderType));
@@ -96,11 +98,7 @@ const ColumnOrder = ({ variables, reponses, currentRep }) => {
         >
           Réinitialiser
         </Button>
-        <input
-          type="hidden"
-          {...register("order")}
-          value={JSON.stringify(order)}
-        />
+        <input type="hidden" {...register("order")} value={order} />
         <Button type="submit">Submit Order</Button>
       </div>
     </form>
