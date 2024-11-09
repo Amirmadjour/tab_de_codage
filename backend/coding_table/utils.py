@@ -9,8 +9,9 @@ def create_coding_table(data, ordinale_order={}):
     for col in data.columns:
         unique_values = data[col].dropna().unique()
         if col in ordinale_order:
-            for index, val in enumerate(unique_values):
-                tab_de_codage[f"{col}_{ordinale_order[col][index]}"] = 0
+            for val in ordinale_order[col]:
+               if val in unique_values:
+                    tab_de_codage[f"{col}_{val}"] = 0
         else:
             for val in unique_values:
                 tab_de_codage[f"{col}_{val}"] = 0
@@ -21,10 +22,9 @@ def create_coding_table(data, ordinale_order={}):
             if pd.notna(value):
 
                 if col in ordinale_order:
-                    unique_values = data[col].dropna().unique()
-                    for index, val in enumerate(unique_values):
-                        tab_de_codage.loc[i, f"{col}_{ordinale_order[col][index]}"] = 1
+                    for val in ordinale_order[col]:
                         if val == value:
+                            tab_de_codage.loc[i, f"{col}_{val}"] = 1
                             break
                 else:
                     tab_de_codage.loc[i, f"{col}_{value}"] = 1
