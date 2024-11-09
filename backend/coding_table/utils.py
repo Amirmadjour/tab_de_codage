@@ -5,7 +5,7 @@ from sklearn.cluster import KMeans
 
 def create_coding_table(data, ordinale_order={}):
     tab_de_codage = pd.DataFrame()
-    print("ordinal_order my man: ", ordinale_order)
+    print(ordinale_order)
 
     for col in data.columns:
         unique_values = data[col].dropna().unique()
@@ -24,8 +24,8 @@ def create_coding_table(data, ordinale_order={}):
 
                 if col in ordinale_order:
                     for val in ordinale_order[col]:
+                        tab_de_codage.loc[i, f"{col}_{val}"] = 1
                         if val == value:
-                            tab_de_codage.loc[i, f"{col}_{val}"] = 1
                             break
                 else:
                     tab_de_codage.loc[i, f"{col}_{value}"] = 1
