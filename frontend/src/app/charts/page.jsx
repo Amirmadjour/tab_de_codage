@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import InfoSVG from "@/assets/svg/InfoSVG";
 import { useRawData } from "@/components/RawDataContext";
 import { useData } from "@/components/DataContext";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { conTabs } from "@/lib/utils";
 import StepsChart from "./StepsChart";
 
@@ -34,7 +34,7 @@ const page = () => {
 
           const tabDistanceResponse = await axios
             .post(
-              "http://127.0.0.1:8000/coding_table/api/create-distance-table/",
+              "create-distance-table/",
               formData,
               { headers: { "Content-Type": "multipart/form-data" } }
             )
@@ -44,7 +44,7 @@ const page = () => {
 
           const tabBurtResponse = await axios
             .post(
-              "http://127.0.0.1:8000/coding_table/api/create-burt-table/",
+              "create-burt-table/",
               formData,
               { headers: { "Content-Type": "multipart/form-data" } }
             )
@@ -54,7 +54,7 @@ const page = () => {
 
           const tabContingenceResponse = await axios
             .post(
-              "http://127.0.0.1:8000/coding_table/api/create-contigence-table/",
+              "create-contigence-table/",
               formData,
               { headers: { "Content-Type": "multipart/form-data" } }
             )

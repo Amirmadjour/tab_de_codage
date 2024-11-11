@@ -3,7 +3,7 @@ import { useRawData } from "@/components/RawDataContext";
 import { useState, useEffect } from "react";
 import InfoSVG from "@/assets/svg/InfoSVG";
 import { useData } from "@/components/DataContext";
-import axios from "axios";
+import axios from "@/lib/axios";
 import Tables from "./Tables";
 import { v4 as uuidv4 } from "uuid";
 
@@ -43,7 +43,7 @@ const page = () => {
 
           const response = await axios
             .post(
-              "http://127.0.0.1:8000/coding_table/api/create-coding-table/",
+              "create-coding-table/",
               formData,
               { headers: { "Content-Type": "multipart/form-data" } }
             )
@@ -60,7 +60,7 @@ const page = () => {
 
           const tabDisjonctifResponse = await axios
             .post(
-              "http://127.0.0.1:8000/coding_table/api/create-coding-table-disjonctif-complet/",
+              "create-coding-table-disjonctif-complet/",
               formData,
               { headers: { "Content-Type": "multipart/form-data" } }
             )
@@ -75,7 +75,7 @@ const page = () => {
 
           const tabDistanceResponse = await axios
             .post(
-              "http://127.0.0.1:8000/coding_table/api/create-distance-table/",
+              "create-distance-table/",
               formData,
               { headers: { "Content-Type": "multipart/form-data" } }
             )
@@ -90,7 +90,7 @@ const page = () => {
 
           const tabBurtResponse = await axios
             .post(
-              "http://127.0.0.1:8000/coding_table/api/create-burt-table/",
+              "create-burt-table/",
               formData,
               { headers: { "Content-Type": "multipart/form-data" } }
             )
@@ -106,7 +106,7 @@ const page = () => {
           let obj5 = {};
           const tabContingenceResponse = await axios
             .post(
-              "http://127.0.0.1:8000/coding_table/api/create-contigence-table/",
+              "create-contigence-table/",
               formData,
               { headers: { "Content-Type": "multipart/form-data" } }
             )

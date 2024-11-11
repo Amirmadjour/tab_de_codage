@@ -4,7 +4,7 @@ import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, Tooltip, Legend, ArcElement } from "chart.js";
 import { useRawData } from "@/components/RawDataContext";
 import { useData } from "@/components/DataContext";
-import axios from "axios";
+import axios from "@/lib/axios";
 import InfoSVG from "@/assets/svg/InfoSVG";
 
 ChartJS.register(Tooltip, Legend, ArcElement);
@@ -20,7 +20,7 @@ const page = () => {
       try {
         if (Object.keys(rawData.file).length > 0) {
           const pieResponse = await axios
-            .post("http://127.0.0.1:8000/coding_table/api/pie-data/", data)
+            .post("pie-data/", data)
             .then((res) => setPieData(res.data))
             .catch((err) => console.error(err));
         }

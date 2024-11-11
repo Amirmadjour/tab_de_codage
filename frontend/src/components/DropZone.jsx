@@ -5,19 +5,16 @@ import Papa from "papaparse";
 import VAROrdinale from "./VAROrdinale";
 import ColumnOrder from "./ColumnOrder";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { useRawData } from "@/components/RawDataContext";
 import FileUploadSVG from "@/assets/svg/FileUploadSVG";
+import axios from "@/lib/axios";
 
 export default function DropZone() {
   const { rawData, setRawData } = useRawData();
-
-
   const [columnOrder, setColumnOrder] = useState([]);
   const [variablesOrdinales, setVariablesOrdinales] = useState([]);
 
   const onDrop = useCallback(async (acceptedFiles) => {
-
     const file_acc = acceptedFiles[0];
 
     if (file_acc) {
@@ -36,7 +33,8 @@ export default function DropZone() {
       setRawData((prev) => ({ ...prev, file: file_acc }));
 
       const res = await axios
-        .post("http://127.0.0.1:8000/coding_table/api/csv-data/", formData)
+        .post("/csv-data/", formData)
+        .then((res) => console.log(res))
         .catch((err) => console.error("Error while uploading csv file: ", err));
     }
   }, []);
