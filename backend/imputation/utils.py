@@ -1,9 +1,11 @@
 # functions here
 import numpy as np
 import pandas as pd
-
-def simple_linear_regression(data, c1, c2):
+# useless because multiple regression dir khadmetha hhh
+def simple_linear_regression(data):
     # on supprime
+    c1 = data.columns[0]
+    c2 = data.columns[1]
     a = c1
     b = c2
     for j in range(2):
@@ -60,3 +62,13 @@ def multiple_linear_regression(data):
         # on applique la regression multiple pour toutes les colonnes du dataset
         data = MT(data, data.columns[i])
     return data
+
+
+# other linear regressions (dérivés partielles...)
+
+
+# KNN
+
+
+# cosine sina algorithm
+
