@@ -70,7 +70,7 @@ export default function DropZone() {
         {...getRootProps()}
         className="dashed w-full h-48 flex items-center justify-center my-2.5"
       >
-        <input {...getInputProps()} accept=".csv" />
+        <input {...getInputProps()} accept=".csv, .xlsx" />
         {Object.keys(rawData.file).length > 0 ? (
           <p>{rawData.file.name}</p>
         ) : isDragActive ? (
