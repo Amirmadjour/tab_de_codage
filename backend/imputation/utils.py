@@ -1,7 +1,7 @@
 # functions here
 import numpy as np
 import pandas as pd
-
+# useless because multiple regression dir khadmetha hhh
 def simple_linear_regression(data):
     # on supprime
     c1 = data.columns[0]

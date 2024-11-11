@@ -1,7 +1,5 @@
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
-from sklearn.cluster import KMeans
 
 def create_coding_table(data, ordinale_order={}):
     tab_de_codage = pd.DataFrame()
@@ -93,32 +91,62 @@ def create_tableau_de_contingence(data):
     for i, col1 in enumerate(data.columns):
         for j, col2 in enumerate(data.columns):
             if i < j:
-                # Créer le tableau de contingence
-                tableau = data.pivot_table(
+                # création du tableau de contingence
+                tableau_de_contigence = data.pivot_table(
                     index=col1,
                     columns=col2,
                     aggfunc='size',
                     fill_value=0
                 )
 
-                le_x, le_y = LabelEncoder(), LabelEncoder()
+                row_totals = tableau_de_contigence.sum(axis=1)
+                tableau_de_profil_ligne = tableau_de_contigence.div(row_totals, axis=0)
 
-                x_encoded = le_x.fit_transform(tableau.index)
-                y_encoded = le_y.fit_transform(tableau.columns)
+                col_totals = tableau_de_contigence.sum(axis=0)
+                tableau_de_profil_colonne = tableau_de_contigence.div(col_totals, axis=1)
 
-                x_coords = np.repeat(x_encoded, len(y_encoded))
-                y_coords = np.tile(y_encoded, len(x_encoded))
-                values = tableau.values.flatten()
 
-                points = np.array([x_coords, y_coords]).T
-                weights = values / values.sum()
+                unique_rows = tableau_de_profil_ligne.index
+                unique_cols = tableau_de_profil_ligne.columns
+                x_coords = np.arange(len(unique_rows))
+                y_coords = np.arange(len(unique_cols))
 
-                kmeans = KMeans(n_clusters=1, random_state=0)
-                barycenter = kmeans.fit(points, sample_weight=weights).cluster_centers_[0]
+                # centre de gravité
+                total_values = tableau_de_contigence.values.sum()
+                poids_x = 0
+                poids_y = 0
+                # formule du centre de gravité
+                for ligne_id, row_val in enumerate(x_coords):
+                    for col_id, col_val in enumerate(y_coords):
+                        poids = tableau_de_contigence.iloc[ligne_id, col_id] / total_values
+                        poids_x += row_val * poids
+                        poids_y += col_val * poids
 
+                centre_de_gravite = (round(poids_x, 4), round(poids_y, 4))
+
+
+                #  N(I)
+                nuage_points = []
+                for idd, row in tableau_de_profil_ligne.iterrows():
+                    f_i = row_totals[idd] / row_totals.sum()
+                    profil_coords = [(round(row[j], 4), round(f_i, 4)) for j in tableau_de_profil_ligne.columns]
+                    nuage_points.append(profil_coords)
+
+
+                # N(J)
+                nuage_points_J = []
+                for col in tableau_de_profil_colonne.columns:
+                    f_j = col_totals[col] / col_totals.sum()  # Poids de la colonne
+                    profil_coords = [(round(tableau_de_profil_colonne.loc[i, col], 4), round(f_j, 4)) for i in tableau_de_profil_colonne.index]
+                    nuage_points_J.append(profil_coords)
+
+                # export
                 tableaux[f"{col1}_|_{col2}"] = {
-                    'tableau': tableau,
-                    'centre_de_gravite': tuple(barycenter)
+                    'tableau': tableau_de_contigence,
+                    'centre_de_gravite': tuple(centre_de_gravite),
+                    'N(I)': nuage_points,
+                    'N(J)': nuage_points_J
+
                 }
 
     return tableaux
