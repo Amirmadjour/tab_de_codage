@@ -42,11 +42,9 @@ const page = () => {
           formData.append("ordinal_cols", JSON.stringify(data));
 
           const response = await axios
-            .post(
-              "create-coding-table/",
-              formData,
-              { headers: { "Content-Type": "multipart/form-data" } }
-            )
+            .post("create-coding-table/", formData, {
+              headers: { "Content-Type": "multipart/form-data" },
+            })
             .catch((err) => console.error(err));
           const codingTab = JSON.parse(response.data);
           console.log("data: ", data);
@@ -59,11 +57,9 @@ const page = () => {
           };
 
           const tabDisjonctifResponse = await axios
-            .post(
-              "create-coding-table-disjonctif-complet/",
-              formData,
-              { headers: { "Content-Type": "multipart/form-data" } }
-            )
+            .post("create-coding-table-disjonctif-complet/", formData, {
+              headers: { "Content-Type": "multipart/form-data" },
+            })
             .catch((err) => console.error(err));
           const disjonctifTab = JSON.parse(tabDisjonctifResponse.data);
           setTabDisjonctif(disjonctifTab);
@@ -74,11 +70,9 @@ const page = () => {
           };
 
           const tabDistanceResponse = await axios
-            .post(
-              "create-distance-table/",
-              formData,
-              { headers: { "Content-Type": "multipart/form-data" } }
-            )
+            .post("create-distance-table/", formData, {
+              headers: { "Content-Type": "multipart/form-data" },
+            })
             .catch((err) => console.error(err));
           const distanceTab = JSON.parse(tabDistanceResponse.data);
           setTabDistance(distanceTab);
@@ -89,11 +83,9 @@ const page = () => {
           };
 
           const tabBurtResponse = await axios
-            .post(
-              "create-burt-table/",
-              formData,
-              { headers: { "Content-Type": "multipart/form-data" } }
-            )
+            .post("create-burt-table/", formData, {
+              headers: { "Content-Type": "multipart/form-data" },
+            })
             .catch((err) => console.error(err));
           const BurtTab = JSON.parse(tabBurtResponse.data);
           setTabBurt(BurtTab);
@@ -105,12 +97,11 @@ const page = () => {
 
           let obj5 = {};
           const tabContingenceResponse = await axios
-            .post(
-              "create-contigence-table/",
-              formData,
-              { headers: { "Content-Type": "multipart/form-data" } }
-            )
+            .post("create-contigence-table/", formData, {
+              headers: { "Content-Type": "multipart/form-data" },
+            })
             .then((res) => {
+              console.log("Contingence: ", res);
               setTabContingence(res.data.tables);
               obj5 = {
                 id: uuidv4(),

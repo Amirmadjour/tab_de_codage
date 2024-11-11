@@ -170,8 +170,8 @@ def create_tableau_de_contigence_view(request):
             key: {
                 "tableau": table_data['tableau'].to_dict(orient='split'),
                 "centre_de_gravite": table_data['centre_de_gravite'],
-                "N(I)": table_data['N(I)'],
-                "N(J)": table_data['N(J)']
+                "Ni": table_data['N(I)'],
+                "Nj": table_data['N(J)']
             }
             for key, table_data in tableaux_de_contingence.items()
         }

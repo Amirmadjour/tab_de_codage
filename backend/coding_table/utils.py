@@ -129,16 +129,16 @@ def create_tableau_de_contingence(data):
                 nuage_points = []
                 for idd, row in tableau_de_profil_ligne.iterrows():
                     f_i = row_totals[idd] / row_totals.sum()
-                    profil_coords = [(round(row[j], 4), round(f_i, 4)) for j in tableau_de_profil_ligne.columns]
-                    nuage_points.append(profil_coords)
+                    profil_coords = [(round(row[j], 4)) for j in tableau_de_profil_ligne.columns]
+                    nuage_points.append([profil_coords, (round(f_i, 4))])
 
 
                 # N(J)
                 nuage_points_J = []
                 for col in tableau_de_profil_colonne.columns:
                     f_j = col_totals[col] / col_totals.sum()  # Poids de la colonne
-                    profil_coords = [(round(tableau_de_profil_colonne.loc[i, col], 4), round(f_j, 4)) for i in tableau_de_profil_colonne.index]
-                    nuage_points_J.append(profil_coords)
+                    profil_coords = [(round(tableau_de_profil_colonne.loc[i, col], 4)) for i in tableau_de_profil_colonne.index]
+                    nuage_points_J.append([profil_coords, round(f_j, 4)])
 
                 # export
                 tableaux[f"{col1}_|_{col2}"] = {

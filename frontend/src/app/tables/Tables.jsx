@@ -31,7 +31,7 @@ const Tables = ({ tables }) => {
   }, [tabContingence]);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-5">
+    <div className="flex flex-col items-center justify-center gap-10">
       <div className="w-full flex items-center justify-between">
         <Button
           onClick={decrement}
