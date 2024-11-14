@@ -7,7 +7,7 @@ import axios from "@/lib/axios";
 import { conTabs } from "@/lib/utils";
 import StepsChart from "./StepsChart";
 
-const page = () => {
+const Page = () => {
   const { rawData } = useRawData();
   const { data, setData } = useData();
   const [tabContingence, setTabContingence] = useState({});
@@ -33,31 +33,25 @@ const page = () => {
           formData.append("ordinal_cols", JSON.stringify(data));
 
           const tabDistanceResponse = await axios
-            .post(
-              "create-distance-table/",
-              formData,
-              { headers: { "Content-Type": "multipart/form-data" } }
-            )
+            .post("create-distance-table/", formData, {
+              headers: { "Content-Type": "multipart/form-data; charset=UTF-8" },
+            })
             .catch((err) => console.error(err));
           const distanceTab = JSON.parse(tabDistanceResponse.data);
           setTabDistance(distanceTab);
 
           const tabBurtResponse = await axios
-            .post(
-              "create-burt-table/",
-              formData,
-              { headers: { "Content-Type": "multipart/form-data" } }
-            )
+            .post("create-burt-table/", formData, {
+              headers: { "Content-Type": "multipart/form-data; charset=UTF-8" },
+            })
             .catch((err) => console.error(err));
           const BurtTab = JSON.parse(tabBurtResponse.data);
           setTabBurt(BurtTab);
 
           const tabContingenceResponse = await axios
-            .post(
-              "create-contigence-table/",
-              formData,
-              { headers: { "Content-Type": "multipart/form-data" } }
-            )
+            .post("create-contigence-table/", formData, {
+              headers: { "Content-Type": "multipart/form-data; charset=UTF-8" },
+            })
             .then((res) => {
               setTabContingence(res.data.tables);
             })
@@ -113,4 +107,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

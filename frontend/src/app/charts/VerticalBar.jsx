@@ -9,7 +9,7 @@ import {
 } from "chart.js";
 import { useData } from "@/components/DataContext";
 import { Bar } from "react-chartjs-2";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { useRawData } from "@/components/RawDataContext";
 
 // Register the components
@@ -26,7 +26,7 @@ const VerticalBar = () => {
       try {
         if (Object.keys(rawData.file).length > 0) {
           const pieResponse = await axios
-            .post("http://127.0.0.1:8000/coding_table/api/pie-data/", data)
+            .post("pie-data/", data)
             .then((res) => setPieData(res.data))
             .catch((err) => console.error(err));
         }
@@ -79,7 +79,7 @@ const VerticalBar = () => {
       }
     }
     return (
-      <div className="grid grid-cols-2">
+      <div className="w-full flex flex-col ">
         {data &&
           PieDataArr &&
           PieDataArr.map((p, index) => (

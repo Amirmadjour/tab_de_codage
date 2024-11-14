@@ -57,11 +57,15 @@ const Tables = ({ tables }) => {
       </div>
       {items.map(
         (i, index) =>
-          step === index + 1 && <SingleTable key={i.id} title={i.title} content={i.content} />
+          step === index + 1 && (
+            <SingleTable key={i.id} title={i.title} content={i.content} />
+          )
       )}
       {Object.keys(tabContingence).length > 0 &&
         step === 5 &&
-        tabsConArr.map((i) => <ContingenceTable content={i} />)}
+        tabsConArr.map((i, index) => (
+          <ContingenceTable key={index} content={i} />
+        ))}
     </div>
   );
 };

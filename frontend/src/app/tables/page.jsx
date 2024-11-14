@@ -7,7 +7,7 @@ import axios from "@/lib/axios";
 import Tables from "./Tables";
 import { v4 as uuidv4 } from "uuid";
 
-const page = () => {
+const Page = () => {
   const { rawData } = useRawData();
   const { data, setData } = useData();
   const [tabCodage, setTabCodage] = useState({
@@ -43,7 +43,7 @@ const page = () => {
 
           const response = await axios
             .post("create-coding-table/", formData, {
-              headers: { "Content-Type": "multipart/form-data" },
+              headers: { "Content-Type": "multipart/form-data; charset=UTF-8" },
             })
             .catch((err) => console.error(err));
           const codingTab = JSON.parse(response.data);
@@ -58,7 +58,7 @@ const page = () => {
 
           const tabDisjonctifResponse = await axios
             .post("create-coding-table-disjonctif-complet/", formData, {
-              headers: { "Content-Type": "multipart/form-data" },
+              headers: { "Content-Type": "multipart/form-data; charset=UTF-8" },
             })
             .catch((err) => console.error(err));
           const disjonctifTab = JSON.parse(tabDisjonctifResponse.data);
@@ -71,7 +71,7 @@ const page = () => {
 
           const tabDistanceResponse = await axios
             .post("create-distance-table/", formData, {
-              headers: { "Content-Type": "multipart/form-data" },
+              headers: { "Content-Type": "multipart/form-data; charset=UTF-8" },
             })
             .catch((err) => console.error(err));
           const distanceTab = JSON.parse(tabDistanceResponse.data);
@@ -84,7 +84,7 @@ const page = () => {
 
           const tabBurtResponse = await axios
             .post("create-burt-table/", formData, {
-              headers: { "Content-Type": "multipart/form-data" },
+              headers: { "Content-Type": "multipart/form-data; charset=UTF-8" },
             })
             .catch((err) => console.error(err));
           const BurtTab = JSON.parse(tabBurtResponse.data);
@@ -98,7 +98,7 @@ const page = () => {
           let obj5 = {};
           const tabContingenceResponse = await axios
             .post("create-contigence-table/", formData, {
-              headers: { "Content-Type": "multipart/form-data" },
+              headers: { "Content-Type": "multipart/form-data; charset=UTF-8" },
             })
             .then((res) => {
               console.log("Contingence: ", res);
@@ -135,4 +135,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

@@ -9,7 +9,7 @@ import InfoSVG from "@/assets/svg/InfoSVG";
 
 ChartJS.register(Tooltip, Legend, ArcElement);
 
-const page = () => {
+const Page = () => {
   const [pieData, setPieData] = useState();
   const [error, setError] = useState();
   const { rawData } = useRawData();
@@ -92,4 +92,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
