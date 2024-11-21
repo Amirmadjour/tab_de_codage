@@ -58,6 +58,7 @@ def MT(data, target_column):
     return data
 
 def multiple_linear_regression(data):
+    #je dois ajouter une condition : si la colonne contient des valeurs NaN
     for i in range(data.shape[1]):
         # on applique la regression multiple pour toutes les colonnes du dataset
         data = MT(data, data.columns[i])

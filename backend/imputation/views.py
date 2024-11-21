@@ -3,13 +3,14 @@ import numpy as np
 import pandas as pd
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-import math
 from rest_framework import status
 import json
 from .utils import simple_linear_regression, multiple_linear_regression, MT
+
+
 @api_view(['GET'])
 def get_data(request):
-    data = {"message": "salam from coding table app!"}
+    data = {"message": "salam from imputation app hh"}
     return Response(data)
 
 # fichier csv uploadé
@@ -60,7 +61,7 @@ def simple_linear_regression_view(request):
 def multiple_linear_regression_view(request):
     try:
         if 'df' not in uploaded_csv_data:
-            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier d'abord"},
+            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier"},
                             status=status.HTTP_400_BAD_REQUEST)
 
         df = uploaded_csv_data['df']

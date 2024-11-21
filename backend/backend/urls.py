@@ -5,5 +5,6 @@ from .views import get_data
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('coding_table/', include('coding_table.urls')),
+    path('imputation/', include('imputation.urls')),
     path('api/hello/', get_data, name='get_data'),  # Ajoutez votre endpoint ici
 ]
