@@ -1,13 +1,30 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Pie } from "react-chartjs-2";
-import { Chart as ChartJS, Tooltip, Legend, ArcElement } from "chart.js";
+import { Pie, Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  Tooltip,
+  Legend,
+  ArcElement,
+  CategoryScale,
+  LinearScale,
+  BarController,
+  BarElement,
+} from "chart.js";
 import { useRawData } from "@/components/RawDataContext";
 import { useData } from "@/components/DataContext";
 import axios from "@/lib/axios";
 import InfoSVG from "@/assets/svg/InfoSVG";
 
-ChartJS.register(Tooltip, Legend, ArcElement);
+ChartJS.register(
+  CategoryScale,
+  Legend,
+  ArcElement,
+  LinearScale,
+  BarController,
+  BarElement,
+  Tooltip
+);
 
 const Page = () => {
   const [pieData, setPieData] = useState();
@@ -37,7 +54,7 @@ const Page = () => {
     if (data) {
       for (const key in data) {
         console.log("Number: ", key);
-        const PieData = {
+        const baseDataset = {
           labels: Object.keys(data[key]),
           datasets: [
             {
@@ -55,7 +72,11 @@ const Page = () => {
             },
           ],
         };
-        PieDataArr = [...PieDataArr, PieData];
+
+        const pieDataCopy = JSON.parse(JSON.stringify(baseDataset));
+        const barDataCopy = JSON.parse(JSON.stringify(baseDataset));
+
+        PieDataArr = [...PieDataArr, { pie: barDataCopy, bar: pieDataCopy }];
       }
     }
     console.log("PieDataArr: ", PieDataArr);
@@ -65,7 +86,8 @@ const Page = () => {
           PieDataArr &&
           PieDataArr.map((p, index) => (
             <div key={index} className="w-full">
-              <Pie data={p} />
+              <Pie data={p.bar} />
+              <Bar data={p.pie} />
             </div>
           ))}
       </div>

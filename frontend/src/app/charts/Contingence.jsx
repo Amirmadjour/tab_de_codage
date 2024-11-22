@@ -1,4 +1,5 @@
 import HeatMap from "./HeatMap";
+import StackedBar from "@/app/charts/StackedBar";
 
 const Contingence = ({ data }) => {
   return (
@@ -6,7 +7,7 @@ const Contingence = ({ data }) => {
       {Object.keys(data.content.tabContingence).length > 0 && (
         <div className="w-full flex flex-col items-center justify-center">
           {data.content.tabsConArr.map((i, index) => (
-            <HeatMap key={index} content={i.tableau} />
+            <StackedBar key={index} content={i.tableau} />
           ))}
         </div>
       )}
