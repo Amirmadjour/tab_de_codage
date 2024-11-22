@@ -8,10 +8,8 @@ __pycache__/
 
 # Environment files for both Django and Next.js
 .env
-.env.local
 .env.development.local
 .env.test.local
-.env.production.local
 .env.production
 
 # Virtual environments
