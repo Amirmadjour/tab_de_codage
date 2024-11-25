@@ -26,7 +26,7 @@ export default function Home() {
         <InfoCard
           title="Data visualisation"
           time="1min ago"
-          description="The visual representation of you file"
+          description="The visual representation of your file"
         />
         <InfoCard
           title="Raw CSV"
