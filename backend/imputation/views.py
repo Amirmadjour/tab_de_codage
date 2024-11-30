@@ -5,11 +5,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 import json
-from .utils import knn_imputer, multiple_linear_regression, MT, Standardisation, MatriceCorrelation
-import io
-import base64
-import matplotlib.pyplot as plt
-import seaborn as sns
+from .utils import knn_imputer, multiple_linear_regression, Standardisation, MatriceCorrelation, nbValManquantes, boxplot
 
 @api_view(['GET'])
 def get_data(request):
@@ -58,24 +54,12 @@ def knn_view(request):
 
         df = uploaded_csv_data['df']
         data = df.to_numpy()
-        knn = knn_imputer(data, 5)
+        knn = knn_imputer(data)
         knn_df = pd.DataFrame(knn, columns=df.columns)
         return Response(knn_df.to_json(orient='split'), status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-
-
-
-def save_plot_to_base64():
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format='png', bbox_inches='tight')
-    buffer.seek(0)
-    encoded_image = base64.b64encode(buffer.read()).decode('utf-8')
-    buffer.close()
-    plt.close()
-    return encoded_image
 
 
 
@@ -87,40 +71,41 @@ def correlation_matrix_view(request):
                             status=status.HTTP_400_BAD_REQUEST)
 
         df = uploaded_csv_data['df']
-        data = pd.DataFrame(df.to_numpy(), columns=df.columns)
+        df_imputed = knn_imputer(df)
+        data = pd.DataFrame(df_imputed.to_numpy(), columns=df.columns)
 
         Z = Standardisation(data.to_numpy())
 
         matrice_correlation = MatriceCorrelation(Z, data.shape[0])
 
-        plt.figure(figsize=(8, 6))
-        sns.heatmap(matrice_correlation, annot=True, cmap="coolwarm", fmt=".2f")
-        plt.title("Correlation Matrix Heatmap")
+        MC = pd.DataFrame(matrice_correlation)
 
-        image_base64 = save_plot_to_base64()
 
-        return Response({"image": f"data:image/png;base64,{image_base64}"}, status=status.HTTP_200_OK)
-
+        return Response(MC.to_json(orient='split'), status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 @api_view(['POST'])
 def boxplot_view(request):
     try:
+        # Vérifie si le dataframe est présent
         if 'df' not in uploaded_csv_data:
-            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier"},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         df = uploaded_csv_data['df']
+        data = df.to_numpy()
+        data_imputed_with_knn = knn_imputer(data)
 
-        images = {}
-        for col in df.columns:
-            sns.boxplot(data=df[col])
-            plt.title(f'Boxplot {col}')
+        valeurs = boxplot(data_imputed_with_knn)
 
-            images[col] = save_plot_to_base64()
-        return Response({"boxplots": images}, status=status.HTTP_200_OK)
+        json_output = {col: valeurs for col in df.columns}
+
+        return Response(json_output, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -133,18 +118,23 @@ def histogram_view(request):
                             status=status.HTTP_400_BAD_REQUEST)
 
         df = uploaded_csv_data['df']
-        images = {}
-        for col in df.columns:
-            plt.figure(figsize=(6, 4))
-            plt.hist(df[col], bins=20, color='skyblue', edgecolor='black')
-            plt.title(f"Histogramme pour {col}")
-            plt.xlabel(col)
-            plt.ylabel("Fréquence")
-            plt.tight_layout()
+        data = df.to_numpy()
+        knn = knn_imputer(data)
+        knn_df = pd.DataFrame(knn, columns=df.columns)
+        return Response(knn_df.to_json(orient='split'), status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            images[col] = save_plot_to_base64()
 
-        return Response({"histograms": images}, status=status.HTTP_200_OK)
+@api_view(['POST'])
+def nbValManquantes_view(request):
+    try:
+        if 'df' not in uploaded_csv_data:
+            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
+        df = uploaded_csv_data['df']
+
+        return Response(df.to_json(orient='split'), status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -2,7 +2,11 @@
 import numpy as np
 import pandas as pd
 import math
+from sklearn.impute import KNNImputer
 
+def knn_imputer(data):
+    imputer = KNNImputer(n_neighbors=5, weights="uniform", metric="nan_euclidean")
+    return imputer.fit_transform(data)
 
 def nbValManquantes(pd):
   valManqua = {}
@@ -50,7 +54,7 @@ def calculate_row_distances_with_nan(data, target_row_index):
 
 
 
-def knn_imputer(data, k):
+def knn_imputer_madjour(data, k):
     def calculate_distance(row1, row2):
         # Element-wise difference, ignoring NaNs
         diff = row1 - row2
@@ -141,7 +145,7 @@ def multiple_linear_regression(data):
 
 
 
-#graphiques
+#correlation matrix
 def Standardisation(data):
   column_means = np.mean(data, axis=0)
   column_std = np.std(data, axis=0)
@@ -152,8 +156,15 @@ def MatriceCorrelation(Z, n):
   return 1/n * Z.T.dot(Z)
 
 
+# boxplot
+
+def boxplot(data):
+    columns = data.T
+    return [col for col in columns]
 
 # other linear regressions (dérivés partielles...)
 
 
-# cosine sina algorithm
+# cosine sina algorithm Madjour
+
+# cosine sine algorithm Radi

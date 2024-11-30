@@ -7,7 +7,5 @@ pandas==2.1.0
 numpy==1.24.3
 requests==2.31.0
 djangorestframework-simplejwt==5.0.0
-matplotlib==3.8.0
-seaborn==0.12.2
 Pillow==10.1.0
-scipy==1.11.0
+scikit-learn==1.2.2
