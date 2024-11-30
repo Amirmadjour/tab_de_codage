@@ -2,6 +2,7 @@ from django.shortcuts import render
 import numpy as np
 import pandas as pd
 from rest_framework.response import Response
+from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework import status
 import json
@@ -31,7 +32,7 @@ def upload_csv_data(request):
 
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def multiple_linear_regression_view(request):
     try:
         if 'df' not in uploaded_csv_data:
@@ -45,7 +46,7 @@ def multiple_linear_regression_view(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['POST'])
+@api_view(['GET'])
 def knn_view(request):
     try:
         if 'df' not in uploaded_csv_data:
@@ -63,7 +64,7 @@ def knn_view(request):
 
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def correlation_matrix_view(request):
     try:
         if 'df' not in uploaded_csv_data:
@@ -87,7 +88,7 @@ def correlation_matrix_view(request):
 
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def boxplot_view(request):
     try:
         # Vérifie si le dataframe est présent
@@ -101,16 +102,14 @@ def boxplot_view(request):
         data = df.to_numpy()
         data_imputed_with_knn = knn_imputer(data)
 
-        valeurs = boxplot(data_imputed_with_knn)
+        df = pd.DataFrame(data_imputed_with_knn, columns=df.columns)
 
-        json_output = {col: valeurs for col in df.columns}
-
-        return Response(json_output, status=status.HTTP_200_OK)
+        return Response(df.to_dict(orient="list"), status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def histogram_view(request):
     try:
         if 'df' not in uploaded_csv_data:
@@ -126,15 +125,17 @@ def histogram_view(request):
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def nbValManquantes_view(request):
     try:
         if 'df' not in uploaded_csv_data:
             return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier"},
                             status=status.HTTP_400_BAD_REQUEST)
 
+        print("It is getting the request....")
         df = uploaded_csv_data['df']
-
-        return Response(df.to_json(orient='split'), status=status.HTTP_200_OK)
+        data = nbValManquantes(df)
+        print("data: ", data)
+        return JsonResponse(data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

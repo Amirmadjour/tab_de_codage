@@ -6,15 +6,31 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FileX2 } from "lucide-react";
+import clsx from "clsx";
 
-const InfoCard = ({ title, time, description }) => {
+const InfoCard = ({
+  title,
+  time,
+  description,
+  icon,
+  strip_variant = "info",
+}) => {
+  const strip_variant_class = {
+    info: "bg-secondary",
+    success: "bg-[#76C263]",
+    danger: "bg-accent",
+  };
   return (
     <Card className="shrink-0 relative overflow-hidden rounded-[12px] border-none p-4 flex flex-col items-start justify-center gap-2.5 h-fit w-[410px]">
-      <div className="absolute left-0 h-full w-1 bg-blue-600"></div>
+      <div
+        className={clsx(
+          "absolute left-0 h-full w-1 ",
+          strip_variant_class[strip_variant]
+        )}
+      ></div>
       <CardHeader className="flex flex-row items-center justify-center gap-2.5 p-0">
         <div className="flex items-center justify-center bg-[#0000001A] h-fit w-fit p-2 rounded-full">
-          <FileX2 />
+          {icon}
         </div>
         <CardTitle className="text-[18px] !m-0">{title}</CardTitle>
       </CardHeader>

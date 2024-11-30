@@ -1,6 +1,9 @@
+"use client";
 import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/app/components/Header";
+import { RawDataProvider } from "@/lib/RawDataContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -12,11 +15,6 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
-
-export const metadata = {
-  title: "Radhi baddache",
-  description: "Imputation",
-};
 
 const interVariable = localFont({
   src: [
@@ -34,13 +32,18 @@ const interVariable = localFont({
 });
 
 export default function RootLayout({ children }) {
+  const queryClient = new QueryClient();
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${interVariable.className} antialiased w-screen h-screen flex flex-col items-center justify-center gap-2.5 p-2.5`}
       >
-        <Header />
-        <div className="grow overflow-auto w-full">{children}</div>
+        <QueryClientProvider client={queryClient}>
+          <RawDataProvider>
+            <Header />
+            <div className="grow overflow-auto w-full">{children}</div>
+          </RawDataProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );
