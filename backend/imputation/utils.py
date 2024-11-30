@@ -1,60 +1,135 @@
 # functions here
 import numpy as np
 import pandas as pd
-# useless because multiple regression dir khadmetha hhh
-def simple_linear_regression(data):
-    # on supprime
-    c1 = data.columns[0]
-    c2 = data.columns[1]
-    a = c1
-    b = c2
-    for j in range(2):
-        temp = data.copy()
-        temp.dropna(inplace=True)
-        moyenne_y = temp[a].mean()
-        moyenne_x = temp[b].mean()
-        moyenne_xy = temp[[a, b]].mean().sum()
-        m_x_m_y = moyenne_x * moyenne_y
-        moyenne_x_square = (temp[a]**2).mean()
-        a1 = (moyenne_xy - m_x_m_y)/(moyenne_x_square - moyenne_x**2)
-        a0 = moyenne_y - a1*moyenne_x
-        data.loc[data[a].isna(), a] = a0 + a1 * data.loc[data[a].isna(), b]
-        a = c2
-        b = c1
-    # supprimer les lignes qui n'ont pas de valeurs numériques
-    data = data[~(data[c1].isna() & data[c2].isna())]
-    return data
+import math
 
-# regression linéaire multiple (not completed)
+
+def nbValManquantes(pd):
+  valManqua = {}
+  for col in pd:
+    sum = 0
+    for row in pd[col]:
+      if math.isnan(row):
+        sum += 1
+
+    valManqua[col] = sum
+
+  return valManqua
+
+# KNN
+def calculate_row_distances_with_nan(data, target_row_index):
+    # Extract the target row
+    target_row = data[target_row_index]
+
+    data = data[~np.isnan(data[:, 0])]
+
+    # Initialize an array to store distances
+    distances = []
+
+    for i, row in enumerate(data):
+        if i == target_row_index:
+            continue  # Skip the target row itself
+
+        # Element-wise difference (ignoring NaN values)
+        diff = row - target_row
+
+        # Only calculate the squared difference where both elements are not NaN
+        squared_diff = (diff ** 2)
+
+        nan_count = np.sum(np.isnan(squared_diff))
+
+        # Sum the squared differences, ignoring NaN values
+        squared_sum = ((len(diff) - 1) / (len(diff) - nan_count)) * np.nansum(squared_diff)
+
+        # Take the square root of the squared sum
+        distance = np.sqrt(squared_sum)
+
+        distances.append(distance)
+
+    return np.array(distances)
+
+
+
+def knn_imputer(data, k):
+    def calculate_distance(row1, row2):
+        # Element-wise difference, ignoring NaNs
+        diff = row1 - row2
+        # Squared difference where both elements are not NaN
+        squared_diff = np.where(~np.isnan(diff), diff ** 2, 0)
+        # Count non-NaN elements
+        valid_count = np.sum(~np.isnan(diff))
+        if valid_count == 0:
+            return np.inf  # If no valid comparisons, return infinite distance
+        # Return square root of normalized sum
+        return np.sqrt(np.sum(squared_diff) * ((len(row1) - 1) / valid_count))
+
+    # Create a copy of the data to avoid modifying the original
+    data_imputed = data.copy()
+
+    # Get the indices of NaN values
+    nan_indices = [
+        [int(row), col]
+        for col in range(data.shape[1])
+        for row in np.argwhere(np.isnan(data[:, col])).flatten()
+    ]
+
+    for nan_row, nan_col in nan_indices:
+        # Extract the target row with missing value
+        target_row = data_imputed[nan_row]
+        if(nan_row == 318 and nan_col):
+            print(target_row)
+
+        # Compute distances to all other rows
+        distances = []
+        for i, row in enumerate(data_imputed):
+            if i != nan_row:  # Skip the target row itself
+                distance = calculate_distance(target_row, row)
+                distances.append((distance, i))
+
+        # Sort distances and select the k nearest neighbors with non-NaN values in the column
+        distances.sort(key=lambda x: x[0])
+        k_nearest_indices = [
+            index for _, index in distances if not np.isnan(data[index, nan_col])
+        ][:k]  # Limit to k neighbors
+
+        # Impute the missing value using the mean of the k nearest neighbors
+        if k_nearest_indices:
+            neighbor_values = [data[i, nan_col] for i in k_nearest_indices]
+            data_imputed[nan_row, nan_col] = np.average(neighbor_values)
+
+    return data_imputed
+
+# regression linéaire multiple
 def MT(data, target_column):
-    # supprimer les valeurs manquantes pour entrainer les données
-    temp = data.copy()
-    temp.dropna(inplace=True)
+
+    temp = data.dropna()
     n = temp.shape[0]
-    target = temp[target_column]  # cible (y)
 
-    # initialisation de X avec la première ligne et première colonne (n)
-    X = np.ones((n, 1))
+    y = temp[target_column].values.reshape(-1, 1)
+    X = temp.drop(columns=[target_column]).values
 
-    for i in range(temp.shape[1]):
-        if temp.columns[i] != target_column:  # ignorer la colonne y
-            X = np.hstack([X, temp.iloc[:, i].values.reshape(-1, 1)])
 
-    # Initialiser la matrice
-    XtX = np.dot(X.T, X)
-    XtY = np.dot(X.T, temp[target_column].values).reshape(-1, 1)
-    # A = inv(X^T * X) * X^T * Y
-    A = np.linalg.inv(XtX) @ XtY
-    # les lignes de la cible qui n'ont pas de valeurs
-    target_NaN_rows = data[target_column].isna()
-    # supprimer la ligne si TOUTES ses valeurs sont vides
-    data = data[~data.isna().all(axis=1)]
+    X = np.hstack([np.ones((n, 1)), X])
 
-    for i in range(1, data.shape[1]):
-        data.loc[target_NaN_rows, target_column] = A[0]
 
-        for j in range(1, len(A)):
-            data.loc[target_NaN_rows, target_column] += A[j] * data.iloc[:, j - 1].fillna(0)
+    XtX = np.dot(X.T, X)  # X^T * X
+    XtY = np.dot(X.T, y)  # X^T * Y
+    A = np.linalg.pinv(XtX).dot(XtY)  # A = (X^T * X)^-1 * X^T * Y
+
+
+    for idx in data.index:
+        if pd.isna(data.loc[idx, target_column]):  # si la cible est manquante
+            features = data.loc[idx].drop(target_column).values
+
+            features = np.where(pd.isna(features), np.nanmean(data.drop(columns=[target_column]).values, axis=0), features)
+
+
+            features = np.insert(features, 0, 1)  #[1,x1,x2,x3......]
+
+
+            prediction = np.dot(features, A)     # 1a0+x1a1+x2*a2.........
+            data.loc[idx, target_column] = prediction[0]
+
     return data
 
 def multiple_linear_regression(data):
@@ -65,11 +140,20 @@ def multiple_linear_regression(data):
     return data
 
 
+
+#graphiques
+def Standardisation(data):
+  column_means = np.mean(data, axis=0)
+  column_std = np.std(data, axis=0)
+
+  return (data - column_means) / column_std
+
+def MatriceCorrelation(Z, n):
+  return 1/n * Z.T.dot(Z)
+
+
+
 # other linear regressions (dérivés partielles...)
 
 
-# KNN
-
-
 # cosine sina algorithm
-
