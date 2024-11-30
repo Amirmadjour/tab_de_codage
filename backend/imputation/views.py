@@ -69,7 +69,6 @@ def knn_view(request):
 
 
 def save_plot_to_base64():
-    """Enregistre le graphique actuel dans un buffer et retourne son encodage base64."""
     buffer = io.BytesIO()
     plt.savefig(buffer, format='png', bbox_inches='tight')
     buffer.seek(0)
