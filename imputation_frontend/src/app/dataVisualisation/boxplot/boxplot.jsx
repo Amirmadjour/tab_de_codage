@@ -5,12 +5,26 @@ import {
   LinearScale,
   BarController,
   BarElement,
+  Colors,
   Tooltip,
 } from "chart.js";
+import {
+  BoxPlotController,
+  BoxAndWiskers,
+} from "@sgratzl/chartjs-chart-boxplot";
 
-Chart.register(CategoryScale, LinearScale, BarController, BarElement, Tooltip);
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  BarController,
+  BarElement,
+  BoxPlotController,
+  BoxAndWiskers,
+  Colors,
+  Tooltip
+);
 
-export const MyChart = () => {
+export const MyChart = ({ boxplot_data }) => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null); // Ref to store the Chart instance
 
@@ -22,25 +36,19 @@ export const MyChart = () => {
       chartInstance.current.destroy();
     }
 
-    // Create a new chart instance
+    console.log("boxplot_data.key: ", boxplot_data.key);
+    console.log("boxplot_data.value: ", boxplot_data.value);
+
+    const data = {
+      labels: boxplot_data.key,
+      datasets: boxplot_data.value,
+    };
+
     chartInstance.current = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-        datasets: [
-          {
-            label: "# of Votes",
-            data: [12, 19, 3, 5, 2, 3],
-            borderWidth: 1,
-          },
-        ],
-      },
+      type: "boxplot",
+      data: data,
       options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
+        quantiles: "fivenum",
       },
     });
 
@@ -52,5 +60,9 @@ export const MyChart = () => {
     };
   }, []);
 
-  return <canvas ref={chartRef} id="myChart"></canvas>;
+  return (
+    <div className="w-full h-full">
+      <canvas ref={chartRef} id="myChart"></canvas>
+    </div>
+  );
 };

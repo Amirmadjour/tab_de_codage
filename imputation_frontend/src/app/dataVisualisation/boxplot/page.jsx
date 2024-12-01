@@ -21,8 +21,10 @@ const page = () => {
 
   console.log(boxplot.data);
   return (
-    <div className="w-full h-full">
-      <MyChart />
+    <div className="w-full h-full grid grid-cols-2 gap-3">
+      {boxplot.data.map(
+        (i) => i.key && i.value && <MyChart key={i.key} boxplot_data={i} />
+      )}
     </div>
   );
 };

@@ -103,8 +103,11 @@ def boxplot_view(request):
         data_imputed_with_knn = knn_imputer(data)
 
         df = pd.DataFrame(data_imputed_with_knn, columns=df.columns)
+        boxplot_dict = df.to_dict(orient="list")
 
-        return Response(df.to_dict(orient="list"), status=status.HTTP_200_OK)
+        result = [{'key': [key], 'value': [{"label": key, "data": [value]}]} for key, value in boxplot_dict.items()]
+
+        return JsonResponse(result, safe=False, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -132,10 +135,8 @@ def nbValManquantes_view(request):
             return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier"},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        print("It is getting the request....")
         df = uploaded_csv_data['df']
         data = nbValManquantes(df)
-        print("data: ", data)
         return JsonResponse(data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
