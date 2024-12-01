@@ -120,7 +120,7 @@ def histogram_view(request):
         data = df.to_numpy()
         knn = knn_imputer(data)
         knn_df = pd.DataFrame(knn, columns=df.columns)
-        return Response(knn_df.to_json(orient='split'), status=status.HTTP_200_OK)
+        return Response(knn_df.to_dict(orient='list'), status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
