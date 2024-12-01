@@ -163,9 +163,37 @@ def boxplot(data):
     columns = data.T
     return [col for col in columns]
 
+
+def histogram(data):
+    tableaux = {}
+    for column in data.columns:
+        col_data = data[column].dropna()
+
+        min_val = col_data.min()
+        max_val = col_data.max()
+        plage = round(max_val - min_val, 4)
+        nb_classes = int(np.ceil(1+3.3322*np.log10(len(col_data))))  # sturges
+        longueur = round(plage / nb_classes, 4)
+
+        # Built-in function to calculate histogram frequencies
+        bins = np.linspace(min_val, max_val, nb_classes + 1)
+        frequencies, _ = np.histogram(col_data, bins=bins)
+
+        tableaux[column] = {
+            'nom_colonne': column,
+            'frequences': frequencies.tolist(),
+            'longueur_classe': longueur,
+            'nb_classes': nb_classes
+        }
+
+    return tableaux
+
+
+
+
 # other linear regressions (dérivés partielles...)
 
 
-# cosine sina algorithm Madjour
+# cosine sine algorithm Madjour
 
 # cosine sine algorithm Radi

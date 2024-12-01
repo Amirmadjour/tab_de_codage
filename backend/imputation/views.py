@@ -1,12 +1,13 @@
 from django.shortcuts import render
 import numpy as np
 import pandas as pd
+from pandas.core.interchange.dataframe_protocol import DataFrame
 from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework import status
 import json
-from .utils import knn_imputer, multiple_linear_regression, Standardisation, MatriceCorrelation, nbValManquantes, boxplot
+from .utils import knn_imputer, multiple_linear_regression, Standardisation, MatriceCorrelation, nbValManquantes, boxplot, histogram
 
 @api_view(['GET'])
 def get_data(request):
@@ -116,19 +117,19 @@ def boxplot_view(request):
 def histogram_view(request):
     try:
         if 'df' not in uploaded_csv_data:
-            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier"},
+            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier d'abord"},
                             status=status.HTTP_400_BAD_REQUEST)
 
         df = uploaded_csv_data['df']
-        data = df.to_numpy()
-        knn = knn_imputer(data)
-        knn_df = pd.DataFrame(knn, columns=df.columns)
-        return Response(knn_df.to_dict(orient='list'), status=status.HTTP_200_OK)
+        data_imputed_with_knn = knn_imputer(df.to_numpy())
+        data = pd.DataFrame(data_imputed_with_knn, columns=df.columns)
+        histogram_infos = histogram(data)
+
+        return Response(histogram_infos, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-@api_view(['GET'])
+@api_view(['POST'])
 def nbValManquantes_view(request):
     try:
         if 'df' not in uploaded_csv_data:
