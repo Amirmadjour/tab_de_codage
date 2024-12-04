@@ -16,12 +16,12 @@ const NavBar = () => {
     {
       id: uuidv4(),
       title: "Imputation",
-      href: "/imputation",
+      href: "/imputation/knn",
     },
     {
       id: uuidv4(),
       title: "Data visualization",
-      href: "/dataVisualisation",
+      href: "/dataVisualisation/boxplot",
     },
     { id: uuidv4(), title: "Raw CSV", href: "/rawCSV" },
   ];
@@ -39,7 +39,7 @@ const NavBar = () => {
       {
         id: uuidv4(),
         title: "Sine Cosine Algorithm",
-        href: "/imputation/sine-cosine",
+        href: "/imputation/sinecosine/vbadache",
       },
     ],
     dataVisualisation: [
@@ -58,23 +58,56 @@ const NavBar = () => {
     ],
   };
 
+  const subsubnav = {
+    sinecosine: [
+      {
+        id: uuidv4(),
+        title: "Version Badache",
+        href: "/imputation/sinecosine/vbadache",
+      },
+      {
+        id: uuidv4(),
+        title: "Version Madjour",
+        href: "/imputation/sinecosine/vmadjour",
+      },
+    ],
+  };
+
+  console.log(pathname.split("/")[2]);
+
   return (
     <div className="flex items-center justify-center gap-2.5">
       {subNavItems[pathname.split("/")[1]] ? (
         // Sub-navigation view
-        <>
-          <Link href="/">
-            <Button>
-              <ChevronLeft
-                style={{ width: "24px", height: "24px" }}
-                strokeWidth={1.5}
-              />
-            </Button>
-          </Link>
-          {subNavItems[pathname.split("/")[1]].map((item) => (
-            <NavBtn href={item.href} key={item.id} title={item.title} />
-          ))}
-        </>
+        subsubnav[pathname.split("/")[2]] ? (
+          <>
+            <Link href="/imputation/knn">
+              <Button>
+                <ChevronLeft
+                  style={{ width: "24px", height: "24px" }}
+                  strokeWidth={1.5}
+                />
+              </Button>
+            </Link>
+            {subsubnav[pathname.split("/")[2]].map((item) => (
+              <NavBtn href={item.href} key={item.id} title={item.title} />
+            ))}
+          </>
+        ) : (
+          <>
+            <Link href="/">
+              <Button>
+                <ChevronLeft
+                  style={{ width: "24px", height: "24px" }}
+                  strokeWidth={1.5}
+                />
+              </Button>
+            </Link>
+            {subNavItems[pathname.split("/")[1]].map((item) => (
+              <NavBtn href={item.href} key={item.id} title={item.title} />
+            ))}
+          </>
+        )
       ) : (
         // Main navigation view
         items.map((item) => (

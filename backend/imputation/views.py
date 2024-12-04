@@ -129,7 +129,7 @@ def histogram_view(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['POST'])
+@api_view(['GET'])
 def nbValManquantes_view(request):
     try:
         if 'df' not in uploaded_csv_data:
