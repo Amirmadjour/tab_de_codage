@@ -159,8 +159,7 @@ def MatriceCorrelation(Z, n):
 # boxplot
 
 def boxplot(data):
-    columns = data.T
-    return [col for col in columns]
+    return {col: data[col].to_numpy() for col in data.columns}
 
 
 def histogram(data):

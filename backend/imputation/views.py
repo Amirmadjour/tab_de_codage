@@ -101,12 +101,11 @@ def boxplot_view(request):
         df = uploaded_csv_data['df']
         data = df.to_numpy()
         data_imputed_with_knn = knn_imputer(data)
-
+        data_imputed_with_knn = pd.DataFrame(data_imputed_with_knn, columns=df.columns)
         valeurs = boxplot(data_imputed_with_knn)
 
-        json_output = {col: valeurs for col in df.columns}
 
-        return Response(json_output, status=status.HTTP_200_OK)
+        return Response(valeurs, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
