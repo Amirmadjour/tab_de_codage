@@ -1,7 +1,31 @@
-import React from "react";
+"use client";
+import { useQuery } from "@tanstack/react-query";
+import axios from "@/lib/axios";
+import SingleTable from "@/app/components/SingleTable";
+import { SkeletonTable } from "@/app/components/SkeletonComponent";
+
 
 const page = () => {
-  return <div>linear Regression</div>;
+  const getregression = async () => {
+    const { data } = await axios.get("/multiple-linear-regression/");
+    return JSON.parse(data);
+  };
+
+  const regression = useQuery({
+    queryKey: ["regression"],
+    queryFn: () => getregression(),
+  });
+
+  if (regression.isLoading)
+    return (
+      <div>
+        <SkeletonTable />
+      </div>
+    );
+  if (regression.isError)
+    return <div className="text-red-400">{regression.error.message}</div>;
+
+  return <SingleTable content={regression.data} />;
 };
 
 export default page;

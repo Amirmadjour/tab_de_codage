@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from pandas.core.interchange.dataframe_protocol import DataFrame
 from rest_framework.response import Response
+from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework import status
 import json
@@ -32,7 +33,7 @@ def upload_csv_data(request):
 
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def multiple_linear_regression_view(request):
     try:
         if 'df' not in uploaded_csv_data:
@@ -46,7 +47,7 @@ def multiple_linear_regression_view(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['POST'])
+@api_view(['GET'])
 def knn_view(request):
     try:
         if 'df' not in uploaded_csv_data:
@@ -64,7 +65,7 @@ def knn_view(request):
 
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def correlation_matrix_view(request):
     try:
         if 'df' not in uploaded_csv_data:
@@ -88,7 +89,7 @@ def correlation_matrix_view(request):
 
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def boxplot_view(request):
     try:
         # Vérifie si le dataframe est présent
@@ -101,16 +102,18 @@ def boxplot_view(request):
         df = uploaded_csv_data['df']
         data = df.to_numpy()
         data_imputed_with_knn = knn_imputer(data)
-        data_imputed_with_knn = pd.DataFrame(data_imputed_with_knn, columns=df.columns)
-        valeurs = boxplot(data_imputed_with_knn)
 
+        df = pd.DataFrame(data_imputed_with_knn, columns=df.columns)
+        boxplot_dict = df.to_dict(orient="list")
 
-        return Response(valeurs, status=status.HTTP_200_OK)
+        result = [{'key': [key], 'value': [{"label": key, "data": [value]}]} for key, value in boxplot_dict.items()]
+
+        return JsonResponse(result, safe=False, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def histogram_view(request):
     try:
         if 'df' not in uploaded_csv_data:
@@ -126,7 +129,7 @@ def histogram_view(request):
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['POST'])
+@api_view(['GET'])
 def nbValManquantes_view(request):
     try:
         if 'df' not in uploaded_csv_data:
@@ -134,7 +137,7 @@ def nbValManquantes_view(request):
                             status=status.HTTP_400_BAD_REQUEST)
 
         df = uploaded_csv_data['df']
-
-        return Response(df.to_json(orient='split'), status=status.HTTP_200_OK)
+        data = nbValManquantes(df)
+        return JsonResponse(data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

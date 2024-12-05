@@ -17,6 +17,7 @@ module.exports = {
           DEFAULT: "hsl(var(--foreground))",
           secondary: "hsl(var(--foreground-secondary))",
         },
+        hover: "hsl(var(--hover))",
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
