@@ -1,3 +1,4 @@
+from django.db.models.expressions import result
 from django.shortcuts import render
 import numpy as np
 import pandas as pd
@@ -8,6 +9,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 import json
 from .utils import knn_imputer, multiple_linear_regression, Standardisation, MatriceCorrelation, nbValManquantes, boxplot, histogram
+from .sca_radi import sca_impute
 
 @api_view(['GET'])
 def get_data(request):
@@ -141,3 +143,28 @@ def nbValManquantes_view(request):
         return JsonResponse(data, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+@api_view(['POST'])
+def sca_impute_view(request):
+    try:
+        if 'df' not in uploaded_csv_data:
+            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier"},
+                          status=status.HTTP_400_BAD_REQUEST)
+
+        df = uploaded_csv_data['df']
+        results = sca_impute(df)
+
+        imputed_data = {
+            'metrics': results['metrics'],
+            'dataset_imputed': results['dataset_imputed'].to_json(orient='split'),
+            'overall_metrics': results['overall_metrics'],
+            'fitness_mse': results['fitness_mse'],
+            'accuracy': results['accuracy']
+        }
+
+        return JsonResponse(imputed_data, safe=True, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
