@@ -7,34 +7,29 @@ from sklearn.preprocessing import StandardScaler
 
 def sca_impute(dataset):
 
-    # Convert to numpy array if DataFrame
     column_names = dataset.columns
     data = dataset.to_numpy()
 
-    # Add standardization
     scaler = StandardScaler()
     non_nan_mask = ~np.isnan(data)
     temp_data = data.copy()
 
-    # Initialize NaN values with column means for initial scaling
+    # on impute les valeurs manquante avaec col.mean()
     for col in range(data.shape[1]):
         col_mean = np.nanmean(data[:, col])
         temp_data[np.isnan(data[:, col]), col] = col_mean
 
-    # Fit and transform the data
+    # standardization sinon ça marche pas
     data_standardized = scaler.fit_transform(temp_data)
-    # Put back NaN values where they were originally
     data_standardized[~non_nan_mask] = np.nan
 
-    # Update data variable to use standardized version
     data = data_standardized
-
 
     metrics = {}
 
     # indices des valeurs manquantes pour chaque colonne
     indices_nan = np.argwhere(np.isnan(data))
-    n_cols = data.shape[1]  # nb de colonnes
+    n_cols = data.shape[1]
 
     # min et max pour chaque colonne
     min_values = np.nanmin(data, axis=0)
@@ -54,6 +49,7 @@ def sca_impute(dataset):
     def objective_function(solution):
         temp_data = temp.copy()
         idx = 0
+
 
         for col in range(n_cols):
             col_indices_nan = indices_nan[indices_nan[:, 1] == col]
@@ -95,7 +91,7 @@ def sca_impute(dataset):
             mse_history.append(self.g_best.target.fitness)
             super().evolve(epoch)
 
-    model = CustomSCA(epoch=120, pop_size=6)
+    model = CustomSCA(epoch=500, pop_size=10)
     g_best = model.solve(problem_dict)
 
     # appliquer l'imputation imputation finale
@@ -129,11 +125,13 @@ def sca_impute(dataset):
 
     results = {
         'dataset_imputed': pd.DataFrame(temp, columns=column_names),
+        'missing_mask': np.isnan(data).tolist(),
         'metrics': metrics,
         'nb_imputed_values' : np.sum(np.isnan(data)),
         'overall_metrics': {
             'initial_mse': mse_history[0],
             'final_mse': mse_history[-1],
+            'max_accuracy' : accuracies[-1],
             'total_improvement': ((mse_history[0] - mse_history[-1]) / mse_history[0]) * 100},
         'fitness_mse': mse_history,
         'accuracy' : accuracies
