@@ -58,3 +58,9 @@ npm run dev
 cd backend
 python manage.py runserver
 ```
+
+- Websocket
+```
+daphne -p 8000 your_project_name.asgi:application
+```
+

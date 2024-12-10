@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 import json
 from .utils import knn_imputer, multiple_linear_regression, Standardisation, MatriceCorrelation, nbValManquantes, boxplot, histogram
+from .amirOptimisation import sca_func
 
 @api_view(['GET'])
 def get_data(request):
@@ -139,5 +140,29 @@ def nbValManquantes_view(request):
         df = uploaded_csv_data['df']
         data = nbValManquantes(df)
         return JsonResponse(data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+def sca(request):
+    try:
+        if 'df' not in uploaded_csv_data:
+            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        df = uploaded_csv_data['df']
+        data = df.to_numpy()
+        print(request.data)
+
+        epoch = request.data.get('epoch')
+        popsize = request.data.get('popsize')
+        testingset = request.data.get('testingset')
+        trainingset = request.data.get('trainingset')
+        print(epoch, popsize, trainingset, testingset)
+
+        accuracies = sca_func(data, testingset, epoch, popsize)
+        print(accuracies)
+        return JsonResponse({"accuracies": accuracies}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

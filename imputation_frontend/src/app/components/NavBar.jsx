@@ -73,8 +73,6 @@ const NavBar = () => {
     ],
   };
 
-  console.log(pathname.split("/")[2]);
-
   return (
     <div className="flex items-center justify-center gap-2.5">
       {subNavItems[pathname.split("/")[1]] ? (
