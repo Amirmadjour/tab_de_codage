@@ -65,10 +65,23 @@ const NavBar = () => {
         title: "Version Badache",
         href: "/imputation/sinecosine/vbadache",
       },
+      
       {
         id: uuidv4(),
         title: "Version Madjour",
         href: "/imputation/sinecosine/vmadjour",
+      },
+    ],
+    vbadache: [
+      {
+        id: uuidv4(),
+        title: "SCA",
+        href: "/imputation/sinecosine/vbadache/sca",
+      },
+      {
+        id: uuidv4(),
+        title: "RSC",
+        href: "/imputation/sinecosine/vbadache/rsc",
       },
     ],
   };
