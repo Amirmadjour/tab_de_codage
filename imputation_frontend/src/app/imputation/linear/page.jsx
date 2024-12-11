@@ -1,7 +1,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import axios from "@/lib/axios";
-import SingleTable from "@/app/components/SingleTable";
+import SingleTableBadache from "@/app/components/SingleTableBadache";
 import { SkeletonTable } from "@/app/components/SkeletonComponent";
 
 
@@ -25,7 +25,7 @@ const page = () => {
   if (regression.isError)
     return <div className="text-red-400">{regression.error.message}</div>;
 
-  return <SingleTable content={regression.data} />;
+  return <SingleTableBadache content={regression.data} />;
 };
 
 export default page;
