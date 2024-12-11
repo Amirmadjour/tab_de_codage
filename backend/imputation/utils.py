@@ -6,6 +6,13 @@ from sklearn.impute import KNNImputer
 
 def knn_imputer(data):
     imputer = KNNImputer(n_neighbors=5, weights="uniform", metric="nan_euclidean")
+    indices_nan = np.isnan(data).tolist()
+
+    results =
+    {
+        'imputer': imputer
+        'indices_nan' : indices_nan
+    }
     return imputer.fit_transform(data)
 
 def nbValManquantes(pd):
@@ -142,6 +149,8 @@ def multiple_linear_regression(data):
     for i in range(data.shape[1]):
         # on applique la regression multiple pour toutes les colonnes du dataset
         data_copy = MT(data_copy, data.columns[i])
+    indices_nan = np.isnan(data).tolist()
+
     return data_copy
 
 

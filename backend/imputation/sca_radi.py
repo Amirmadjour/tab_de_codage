@@ -91,7 +91,7 @@ def sca_impute(dataset):
             mse_history.append(self.g_best.target.fitness)
             super().evolve(epoch)
 
-    model = CustomSCA(epoch=500, pop_size=10)
+    model = CustomSCA(epoch=120, pop_size=50)
     g_best = model.solve(problem_dict)
 
     # appliquer l'imputation imputation finale
@@ -100,6 +100,9 @@ def sca_impute(dataset):
         col_indices_nan = indices_nan[indices_nan[:, 1] == col]
         temp[col_indices_nan[:, 0], col] = g_best.solution[idx:idx + len(col_indices_nan)]
         idx += len(col_indices_nan)
+
+
+
 
     # on calcule les mesures de performances
     for col in range(n_cols):
@@ -116,6 +119,9 @@ def sca_impute(dataset):
                    'column_name': column_names[col],
                    'f_score': f1_score(y_true, y_pred),
                }
+
+
+
 
     # enlever la standardisation
     temp = scaler.inverse_transform(temp)
