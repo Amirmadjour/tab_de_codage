@@ -30,13 +30,12 @@ const sca = async (parametres) => {
   return response.data;
 };
 
-export function CustomForm({ setData }) {
+export function CustomForm({ method }) {
   const mutation = useMutation({
     mutationFn: sca,
     mutationKey: ["sca"],
     onSuccess: (data) => {
       console.log("Post successful!", data);
-      setData(data);
     },
     onError: (error) => {
       console.error("Error posting data:", error);
@@ -102,6 +101,7 @@ export function CustomForm({ setData }) {
       ...values,
       trainingset: trainingset / 100,
       testingset: testingset / 100,
+      method: method,
     };
     mutation.mutate(values);
   }

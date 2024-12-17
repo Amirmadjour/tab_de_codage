@@ -95,7 +95,7 @@ Chart.register(
   Tooltip
 );
 
-const LineChart = ({ chartData }) => {
+const MultipleLineChart = ({ chartData }) => {
   /*const [dataPoints, setDataPoints] = useState([]);
   const [labels, setLabels] = useState([]);
   const [counter, setCounter] = useState(0); 
@@ -121,16 +121,24 @@ const LineChart = ({ chartData }) => {
     return () => clearInterval(interval); 
   }, [counter]);*/
 
-  console.log("F1 score data: ", chartData);
+  console.log("chartData.Fit: ", chartData?.Fit);
 
   const data = {
-    labels: chartData ? Object.keys(chartData) : [],
+    labels: chartData?.accuracies ? Object.keys(chartData?.accuracies) : [],
     datasets: [
       {
-        label: "F1 score",
-        data: chartData ? Object.values(chartData) : [],
+        label: "Accuracy",
+        data: chartData?.accuracies ? Object.values(chartData?.accuracies) : [],
         backgroundColor: "rgba(75, 192, 192, 0.2)",
         borderColor: "rgb(75, 192, 192)",
+        borderWidth: 1,
+        tension: 0.1,
+      },
+      {
+        label: "Fitness",
+        data: chartData?.Fit ? Object.values(chartData?.Fit) : [],
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: "rgb(255, 59, 48)",
         borderWidth: 1,
         tension: 0.1,
       },
@@ -150,4 +158,4 @@ const LineChart = ({ chartData }) => {
   );
 };
 
-export default LineChart;
+export default MultipleLineChart;

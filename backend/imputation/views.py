@@ -159,9 +159,10 @@ def sca(request):
         popsize = request.data.get('popsize')
         testingset = request.data.get('testingset')
         trainingset = request.data.get('trainingset')
-        print(epoch, popsize, trainingset, testingset)
+        method = request.data.get('method')
+        print(epoch, popsize, trainingset, testingset, method)
 
-        accuracies = sca_func(data, testingset, epoch, popsize)
+        accuracies = sca_func(data, testingset, epoch, popsize, method=method)
         print(accuracies)
         return JsonResponse({"accuracies": accuracies}, status=status.HTTP_200_OK)
     except Exception as e:

@@ -7,6 +7,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.impute import KNNImputer
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import f1_score
 import asyncio
 from .consumers import connected_clients
 
@@ -14,7 +15,11 @@ async def broadcast_accuracy(accuracy):
     for client in connected_clients:
         await client.send_accuracy(accuracy)
 
-def sca_func(data, testingset, epoch, popsize):
+async def broadcast_f1_score(f1_score):
+    for client in connected_clients:
+        await client.send_f1_score(f1_score)
+
+def sca_func(data, testingset, epoch, popsize, method="SCA"):
   scaler = StandardScaler()
 
   features = data[:, 0:9]
@@ -24,6 +29,7 @@ def sca_func(data, testingset, epoch, popsize):
   features = scaler.transform(features)
 
   accuracies = []
+  f1_scores = []
 
   nan_indices = np.array([
       (row, col)  # Tuple of (row, column) indices
@@ -50,7 +56,7 @@ def sca_func(data, testingset, epoch, popsize):
       features_without_nan, target_without_nan, test_size=testingset, random_state=42
   )
 
-  knn = KNeighborsClassifier(n_neighbors=2)
+  knn = KNeighborsClassifier(n_neighbors=5)
   knn.fit(X_train, y_train)
 
   def objective_function(solution):
@@ -63,10 +69,16 @@ def sca_func(data, testingset, epoch, popsize):
       y_pred = knn.predict(X_test_solution)
 
       acc = accuracy_score(y_test_solution, y_pred)
+      f1 = f1_score(y_test_solution, y_pred)
 
       if(len(accuracies) == 0 or max(accuracies) < acc):
           accuracies.append(acc)
           asyncio.run(broadcast_accuracy({len(accuracies): acc}))
+      
+      if(len(f1_scores) == 0 or max(f1_scores) < f1):
+          f1_scores.append(f1)
+          asyncio.run(broadcast_f1_score({len(f1_scores): f1}))
+          
 
       fitness = 1 - acc
       return fitness
@@ -77,8 +89,15 @@ def sca_func(data, testingset, epoch, popsize):
       "obj_func": objective_function
   }
 
-  model = SCA.DevSCA(epoch=epoch, pop_size=popsize)
-  #model = SHIO.OriginalSHIO(epoch=epoch, pop_size=pop_size)
+  print('Method: ', method)
+  if(method=="SCA"): 
+    print('SCA')
+    model = SCA.DevSCA(epoch=epoch, pop_size=popsize)
+    
+  if(method=="SHIO"):
+    print('SHIO')
+    model = SHIO.OriginalSHIO(epoch=epoch, pop_size=popsize)
+
   g_best = model.solve(problem_dict)
 
   print(f"Solution: {g_best.solution}, Fitness: {g_best.target.fitness}")

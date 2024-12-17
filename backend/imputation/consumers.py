@@ -19,3 +19,7 @@ class AccuracyConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'accuracy': accuracy
         }))
+    async def send_f1_score(self, f1_score):
+        await self.send(text_data=json.dumps({
+            'f1_score': f1_score
+        }))
