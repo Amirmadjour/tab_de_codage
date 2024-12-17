@@ -12,7 +12,7 @@ from .utils import knn_imputer, multiple_linear_regression, Standardisation, Mat
 from .sca_radi import sca_impute
 from .esc_radi import esc_impute
 from django.core.cache import cache
-
+from .utils import polynomial_regression_imputation
 @api_view(['GET'])
 def get_data(request):
     data = {"message": "salam from imputation app hh"}
@@ -48,6 +48,20 @@ def multiple_linear_regression_view(request):
         multiple_regression = multiple_linear_regression(df)
 
         return Response(multiple_regression.to_json(orient='split'), status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+def polynomial_regression_view(request):
+    try:
+        if 'df' not in uploaded_csv_data:
+            return Response({"error": "Aucun fichier n'a été uploadé. Veuillez uploader le fichier"},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        df = uploaded_csv_data['df']
+        polynomial = polynomial_regression_imputation(df)
+
+        return Response(polynomial.to_json(orient='split'), status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -184,7 +198,8 @@ def sca_impute_view(request):
             'missing_mask': results['missing_mask'],
             'overall_metrics': results['overall_metrics'],
             'fitness_mse': results['fitness_mse'],
-            'accuracy': results['accuracy']
+            'accuracy': results['accuracy'],
+            'duree': results['duree']
         }
 
         # Stocker le résultat en cache
@@ -233,7 +248,6 @@ def esc_impute_view(request):
             'accuracy': results['accuracy']
         }
 
-        # Stocker le résultat en cache
 
         return JsonResponse(imputed_data, safe=True, status=status.HTTP_200_OK)
     

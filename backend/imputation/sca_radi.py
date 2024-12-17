@@ -3,10 +3,10 @@ from mealpy import FloatVar, SCA
 from sklearn.metrics import f1_score, accuracy_score
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-
+import time
 
 def sca_impute(dataset):
-
+    start_time = time.time()
     column_names = dataset.columns
     data = dataset.to_numpy()
 
@@ -128,7 +128,8 @@ def sca_impute(dataset):
 
     # accuracy/epoch
     accuracies = [1 - mse for mse in mse_history]
-
+    end_time = time.time()
+    duree = end_time - start_time
     results = {
         'dataset_imputed': pd.DataFrame(temp, columns=column_names),
         'missing_mask': np.isnan(data).tolist(),
@@ -140,7 +141,8 @@ def sca_impute(dataset):
             'max_accuracy' : accuracies[-1],
             'total_improvement': ((mse_history[0] - mse_history[-1]) / mse_history[0]) * 100},
         'fitness_mse': mse_history,
-        'accuracy' : accuracies
+        'accuracy' : accuracies,
+        'duree' : duree
     }
 
     return results

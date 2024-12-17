@@ -40,6 +40,7 @@ const MetricsCard = ({ title, value, suffix = '', highlight = false }) => (
         ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' 
         : 'bg-white'
     }`}
+
   >
     <h3 className="text-sm font-medium opacity-80">{title}</h3>
     <div className="mt-2 flex items-baseline">
@@ -262,7 +263,7 @@ const ScaPage = () => {
         >
           Métriques globales
         </motion.h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <MetricsCard 
             title="MSE Initial" 
             value={scaQuery.data.overall_metrics.initial_mse}
@@ -283,6 +284,11 @@ const ScaPage = () => {
             title="Amélioration Totale" 
             value={scaQuery.data.overall_metrics.total_improvement}
             suffix="%"
+          />
+          <MetricsCard
+            title="Durée d'execution"
+            value={scaQuery.data.duree}
+            suffix="seconde"
           />
         </div>
       </div>

@@ -62,13 +62,13 @@ const NavBar = () => {
     sinecosine: [
       {
         id: uuidv4(),
-        title: "Version Badache",
+        title: "SCA",
         href: "/imputation/sinecosine/vbadache",
       },
       
       {
         id: uuidv4(),
-        title: "Version Madjour",
+        title: "ESC",
         href: "/imputation/sinecosine/vmadjour",
       },
     ],

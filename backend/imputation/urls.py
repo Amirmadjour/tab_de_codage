@@ -3,7 +3,7 @@ from django.urls import path
 from .sca_radi import sca_impute
 from .views import (upload_csv_data, knn_view, multiple_linear_regression_view, boxplot_view,
                     histogram_view, correlation_matrix_view, nbValManquantes_view, 
-                    sca_impute_view, esc_impute_view)
+                    sca_impute_view, esc_impute_view, polynomial_regression_view)
 
 urlpatterns = [
     path('api/csv-data/', upload_csv_data, name='upload_csv_data'),
@@ -15,4 +15,5 @@ urlpatterns = [
     path('api/nbValManquantes/', nbValManquantes_view, name='nbValManquantes'),
     path('api/sca/', sca_impute_view, name='sca'),
     path('api/esc/', esc_impute_view, name='esc'),
+    path('api/polynomial/', polynomial_regression_view, name='polynomial'),
 ]
