@@ -41,6 +41,11 @@ const NavBar = () => {
         title: "Sine Cosine Algorithm",
         href: "/imputation/sinecosine/vbadache",
       },
+      {
+        id: uuidv4(),
+        title: "MLP",
+        href: "/imputation/mlp",
+      },
     ],
     dataVisualisation: [
       { id: uuidv4(), title: "Box Plot", href: "/dataVisualisation/boxplot" },
@@ -62,28 +67,17 @@ const NavBar = () => {
     sinecosine: [
       {
         id: uuidv4(),
-        title: "SCA",
+        title: "Version Badache",
         href: "/imputation/sinecosine/vbadache",
       },
       
       {
         id: uuidv4(),
-        title: "ESC",
+        title: "Version Madjour",
         href: "/imputation/sinecosine/vmadjour",
       },
     ],
-    vbadache: [
-      {
-        id: uuidv4(),
-        title: "SCA",
-        href: "/imputation/sinecosine/vbadache/sca",
-      },
-      {
-        id: uuidv4(),
-        title: "RSC",
-        href: "/imputation/sinecosine/vbadache/rsc",
-      },
-    ],
+
   };
 
   console.log(pathname.split("/")[2]);

@@ -2,9 +2,8 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "@/lib/axios";
-import SingleTable from "@/app/components/SingleTable";
+import SingleTable from "@/app/components/SingleTableBadache";
 import { SkeletonTable } from "@/app/components/SkeletonComponent";
-import SingleTableBadache from "@/app/components/SingleTableBadache";
 
 const page = () => {
   const getknn = async () => {
@@ -26,7 +25,10 @@ const page = () => {
   if (knn.isError)
     return <div className="text-red-400">{knn.error.message}</div>;
 
-  return <SingleTableBadache content={knn.data} />;
+  return <SingleTable
+      content={knn.data}
+      className="border-collapse w-full"
+  />;
 };
 
 export default page;

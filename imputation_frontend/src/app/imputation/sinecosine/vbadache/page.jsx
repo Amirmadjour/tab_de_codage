@@ -30,16 +30,23 @@ ChartJS.register(
   Legend
 );
 
-const MetricsCard = ({ title, value, suffix = '', highlight = false }) => (
+const MetricsCard = ({ title, value, suffix = '', highlight = false, highlightRed=false }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
-    className={`p-6 rounded-lg shadow-lg ${
-      highlight 
-        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' 
-        : 'bg-white'
-    }`}
+    //className={`p-6 rounded-lg shadow-lg ${
+    //  highlight
+     //   ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
+      //  : 'bg-white'
+    //}`}
+    className={`p-4 rounded-lg shadow-lg ${
+        highlight
+          ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white' 
+          : highlightRed
+          ? 'bg-red-500 text-white'
+          : 'bg-white text-gray-700'
+      }`}
 
   >
     <h3 className="text-sm font-medium opacity-80">{title}</h3>
@@ -78,22 +85,29 @@ const ChartContainer = ({ title, children }) => (
 
 const ScaPage = () => {
   const getScaImputation = async () => {
-    const { data } = await axios.get("/sca/");
-    return {
-      ...data,
-      dataset_imputed: JSON.parse(data.dataset_imputed),
-      missing_mask: data.missing_mask
-    };
+    try {
+      const { data } = await axios.get("/sca/");
+      return {
+        ...data,
+        dataset_imputed: JSON.parse(data.dataset_imputed),
+        missing_mask: data.missing_mask
+      };
+    } catch (error) {
+      // Si l'erreur est 400, c'est probablement qu'aucun fichier n'a été uploadé
+      if (error.response?.status === 400) {
+        throw new Error("Veuillez d'abord uploader un fichier CSV");
+      }
+      throw error; // Relancer les autres erreurs
+    }
   };
 
   const scaQuery = useQuery({
     queryKey: ["sca-imputation"],
     queryFn: () => getScaImputation(),
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchOnReconnect: false,
-    staleTime: Infinity,
-    cacheTime: Infinity,
+    retry: 1,
   });
 
   const createChartConfig = (accuracyData, fitnessData) => {
@@ -208,6 +222,7 @@ const ScaPage = () => {
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         scales: {
           r: {
             pointLabels: {
@@ -218,7 +233,10 @@ const ScaPage = () => {
               }
             },
             beginAtZero: true,
-            max: 1
+            max: 1,
+            ticks: {
+              backdropPadding: 3
+            }
           }
         },
         plugins: {
@@ -289,6 +307,7 @@ const ScaPage = () => {
             title="Durée d'execution"
             value={scaQuery.data.duree}
             suffix="seconde"
+            highlightRed={true}
           />
         </div>
       </div>
