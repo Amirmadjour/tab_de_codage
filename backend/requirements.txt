@@ -10,3 +10,4 @@ djangorestframework-simplejwt==5.0.0
 Pillow==10.1.0
 scikit-learn==1.2.2
 mealpy==1.4.1
+tensorflow==2.14.0
