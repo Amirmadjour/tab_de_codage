@@ -86,7 +86,7 @@ const ChartContainer = ({ title, children }) => (
 const ScaPage = () => {
   const getScaImputation = async () => {
     try {
-      const { data } = await axios.get("/sca/");
+      const { data } = await axios.get("/sca_radi/");
       return {
         ...data,
         dataset_imputed: JSON.parse(data.dataset_imputed),
