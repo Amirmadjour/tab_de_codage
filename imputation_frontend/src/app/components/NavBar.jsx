@@ -16,7 +16,7 @@ const NavBar = () => {
     {
       id: uuidv4(),
       title: "Imputation",
-      href: "/imputation/knn",
+      href: "/imputation/sinecosine/vbadache",
     },
     {
       id: uuidv4(),
@@ -28,25 +28,7 @@ const NavBar = () => {
 
   // Sub-navigation items for specific sections
   const subNavItems = {
-    imputation: [
-      { id: uuidv4(), title: "KNN", href: "/imputation/knn" },
-      { id: uuidv4(), title: "Linear Regression", href: "/imputation/linear" },
-      {
-        id: uuidv4(),
-        title: "Polynomial Regression",
-        href: "/imputation/polynomial",
-      },
-      {
-        id: uuidv4(),
-        title: "Sine Cosine Algorithm",
-        href: "/imputation/sinecosine/vbadache",
-      },
-      {
-        id: uuidv4(),
-        title: "MLP",
-        href: "/imputation/mlp",
-      },
-    ],
+    imputation: [],
     dataVisualisation: [
       { id: uuidv4(), title: "Box Plot", href: "/dataVisualisation/boxplot" },
       {
@@ -67,15 +49,39 @@ const NavBar = () => {
     sinecosine: [
       {
         id: uuidv4(),
-        title: "Version Badache",
+        title: "V Badache",
         href: "/imputation/sinecosine/vbadache",
       },
-      
       {
         id: uuidv4(),
-        title: "Version Madjour",
-        href: "/imputation/sinecosine/vmadjour",
+        title: "V Badache New",
+        href: "/imputation/sinecosine/vbadacheNew",
       },
+      {
+        id: uuidv4(),
+        title: "V Madjour",
+        href: "/imputation/sinecosine/vmadjourNew",
+      },
+      {
+        id: uuidv4(),
+        title: "V Benyelles",
+        href: "/imputation/sinecosine/vbenyelles",
+      },
+      {
+        id: uuidv4(),
+        title: "V Bennebi",
+        href: "/imputation/sinecosine/vbennebi",
+      },
+      {
+        id: uuidv4(),
+        title: "V Rzaiguia",
+        href: "/imputation/sinecosine/vrzaiguia",
+      },
+      {
+        id: uuidv4(),
+        title: "V Salah",
+        href: "/imputation/sinecosine/varab",
+      }
     ],
 
   };
@@ -86,7 +92,7 @@ const NavBar = () => {
         // Sub-navigation view
         subsubnav[pathname.split("/")[2]] ? (
           <>
-            <Link href="/imputation/knn">
+            <Link href="/">
               <Button>
                 <ChevronLeft
                   style={{ width: "24px", height: "24px" }}
