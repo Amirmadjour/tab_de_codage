@@ -77,8 +77,9 @@ const BennebiImputationPage = () => {
     queryKey: ["bennebi-sca-gwo-imputation"],
     queryFn: getBennebiData,
     refetchOnWindowFocus: false,
-    refetchOnMount: true,
+    refetchOnMount: false,
     refetchOnReconnect: false,
+    staleTime: 1000 * 60 * 60*60,
     retry: 1,
   });
 

@@ -99,8 +99,9 @@ const SalahHybridImputationPage = () => {
     queryKey: ["salah-hybrid-imputation"], // Clé de query unique
     queryFn: getSalahHybridImputation,
     refetchOnWindowFocus: false,
-    refetchOnMount: true,
+    refetchOnMount: false,
     refetchOnReconnect: false,
+    staleTime: 1000 * 60 * 60*60,
     retry: 1,
   });
 

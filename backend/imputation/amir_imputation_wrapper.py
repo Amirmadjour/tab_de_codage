@@ -9,8 +9,8 @@ import time
 import traceback
 
 # Paramètres par défaut pour les algorithmes (peuvent être réduits pour des tests plus rapides)
-DEFAULT_EPOCH_SCA = 10  # Réduit par rapport à l'original pour des tests plus rapides
-DEFAULT_POP_SCA = 10
+DEFAULT_EPOCH_SCA = 5  
+DEFAULT_POP_SCA = 5
 DEFAULT_EPOCH_GWO = 5
 DEFAULT_POP_GWO = 5
 

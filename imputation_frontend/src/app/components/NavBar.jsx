@@ -16,7 +16,7 @@ const NavBar = () => {
     {
       id: uuidv4(),
       title: "Imputation",
-      href: "/imputation/sinecosine/vbadache",
+      href: "/imputation/sinecosine/vmadjourNew",
     },
     {
       id: uuidv4(),

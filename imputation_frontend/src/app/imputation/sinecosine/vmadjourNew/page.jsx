@@ -5,7 +5,6 @@ import SingleTableBadache from "@/app/components/SingleTableBadache";
 import { SkeletonTable } from "@/app/components/SkeletonComponent";
 import { motion } from 'framer-motion';
 
-// Les imports de ChartJS et les graphiques sont commentés car les données spécifiques ne sont pas retournées par cette API.
 
 const MetricsCard = ({ title, value, suffix = '', highlight = false, highlightRed = false }) => (
   <motion.div
@@ -43,9 +42,7 @@ const MetricsCard = ({ title, value, suffix = '', highlight = false, highlightRe
 const AmirImputationPage = () => {
   const getAmirImputationData = async () => {
     try {
-      // La nouvelle API est un POST
       const { data } = await axios.post("/amir-sca-gwo-imputation/", {}); // Envoyer un corps vide si aucun paramètre n'est requis
-      // Assurez-vous que dataset_imputed est une chaîne JSON valide
       if (typeof data.dataset_imputed === 'string') {
         data.dataset_imputed = JSON.parse(data.dataset_imputed);
       }
@@ -60,11 +57,12 @@ const AmirImputationPage = () => {
   };
 
   const amirQuery = useQuery({
-    queryKey: ["amir-sca-gwo-imputation"], // Clé de query unique
+    queryKey: ["amir-sca-gwo-imputation"],
     queryFn: getAmirImputationData,
     refetchOnWindowFocus: false,
-    refetchOnMount: true,
+    refetchOnMount: false,
     refetchOnReconnect: false,
+    staleTime: 1000 * 60 * 60 * 60,
     retry: 1,
   });
 

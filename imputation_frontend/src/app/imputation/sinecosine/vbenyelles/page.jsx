@@ -80,8 +80,9 @@ const BenyellesFullImputationPage = () => {
     queryKey: ["benyelles-sca-gwo-imputation"], // Clé de query mise à jour
     queryFn: getBenyellesFullData,
     refetchOnWindowFocus: false,
-    refetchOnMount: true,
+    refetchOnMount: false,
     refetchOnReconnect: false,
+    staleTime: 1000 * 60 * 60* 60,
     retry: 1,
   });
 
